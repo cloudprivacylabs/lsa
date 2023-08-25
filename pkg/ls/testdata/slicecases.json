@@ -2,132 +2,233 @@
     {
         "name": "basicSlice",
         "schema": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testSchema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "ls:Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": "ls:Value",
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
-                    },
-                    {
-                        "@id":  "attr2" ,
-                        "@type": "ls:Value",
-                        "http://privacy": [
-                            {
-                                "@value": "flg1"
-                            }
-                        ]
-                    },
-                    {
-                        "@id":"attr3",
-                        "@type": "ls:Value",
-                        "http://privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"}
-                        ]
-                    }
-                ]
-            }
-        },
-        "terms": [ "http://someKey" ],
-        "expected": [{
-            "@type":["https://lschema.org/Overlay"],
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "https://lschema.org/Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
-                    }
-                ]
-            }]
-        }]
-    },
-
-    {
-        "name": "FHIRInsurancePlan",
-        "schema": [
-            {
-                "@id": "http://hl7.org/fhir/InsurancePlan/base",
-                "@type": [
-                    "https://lschema.org/Schema"
-                ],
-                "https://lschema.org/layer": [
-                    {
-                        "@type": "https://lschema.org/Object",
-                        "@id": "http://hl7.org/fhir/InsurancePlan",
-                        "@type": "https://lschema.org/Object",
-                        "https://lschema.org/Object/attributes": [
-                            {
-                                "@id": "http://hl7.org/fhir/InsurancePlan#language",
-                                "@type": [
-                                    "https://lschema.org/Value"
-                                ],
-                                "https://lschema.org/attributeName": [
-                                    {
-                                        "@value": "language"
-                                    }
-                                ],
-                                "https://lschema.org/description": [
-                                    {
-                                        "@value": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents"
-                                    }
-                                ],
-                                "https://lschema.org/valueType": [
-                                    {
-                                        "@value": "string"
-                                    }
-                                ],
-                                "https://lschema.org/validation/pattern": [
-                                    {
-                                        "@value": "^[^\\s]+(\\s[^\\s]+)*$"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ],
-        "terms": [ "https://lschema.org/attributeName"],
-        "expected": [{
-            "@type": [ "https://lschema.org/Overlay"],
-            "https://lschema.org/layer": [
+            "nodes": [
                 {
-                    "@id": "http://hl7.org/fhir/InsurancePlan",
-                    "@type": [ "https://lschema.org/Attribute","https://lschema.org/Object"],
-                    "https://lschema.org/Object/attributes": [
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://privacy": [
+                            "flg2",
+                            "flg3"
+                        ],
+                        "https://lschema.org/nodeId": "attr3"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://privacy": "flg1",
+                        "https://lschema.org/nodeId": "attr2"
+                    }
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testSchema"
+                    },
+                    "edges": [
                         {
-                            "@id": "http://hl7.org/fhir/InsurancePlan#language",
-                            "@type": [
-                                "https://lschema.org/Attribute",
-                                "https://lschema.org/Value"
-                            ],
-                            "https://lschema.org/attributeName": [
-                                {
-                                    "@value": "language"
-                                }
-                            ]
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
                         }
                     ]
                 }
             ]
-        }]
+        },
+        "terms": [ "http://someKey" ],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Overlay"
+                    ],
+                    "properties": {
+
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                }
+            ]
+        }
+    },
+
+    {
+        "name": "FHIRInsurancePlan",
+        "schema": {
+            "nodes": [
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeName": "language",
+                        "https://lschema.org/description": "A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents",
+                        "https://lschema.org/nodeId": "http://hl7.org/fhir/InsurancePlan#language",
+                        "https://lschema.org/validation/pattern": "^[^\\s]+(\\s[^\\s]+)*$",
+                        "https://lschema.org/valueType": "string"
+                    }
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://hl7.org/fhir/InsurancePlan/base"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://hl7.org/fhir/InsurancePlan"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                }
+            ]
+        },
+        
+        "terms": [ "https://lschema.org/attributeName"],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Overlay"
+                    ],
+                    "properties": {
+
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://hl7.org/fhir/InsurancePlan"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeName": "language",
+                        "https://lschema.org/nodeId": "http://hl7.org/fhir/InsurancePlan#language"
+                    }
+                }
+            ]
+        }
     }
 ]

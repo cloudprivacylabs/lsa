@@ -1,10 +1,8 @@
 package ls
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"testing"
-	//	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 type ingestTest struct {
@@ -38,15 +36,11 @@ func TestEdges(t *testing.T) {
 //	-- edgeLabel --> (value: "..")
 func (tc ingestTest) testValueAsEdge(t *testing.T) {
 	// g := graph.NewOCGraph()
-	var schMap interface{}
 	schStr, err := ioutil.ReadFile("testdata/value_as_edge_test.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
-		t.Fatal(err)
-	}
-	schema, err := UnmarshalLayer(schMap, nil)
+	schema, err := UnmarshalLayerFromSlice([]byte(schStr))
 	if err != nil {
 		t.Error(err)
 	}
@@ -103,15 +97,11 @@ func (tc ingestTest) testValueAsEdge(t *testing.T) {
 }
 
 func (tc ingestTest) testObjectAsEdge(t *testing.T) {
-	var schMap interface{}
 	schStr, err := ioutil.ReadFile("testdata/object_as_edge_test.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
-		t.Fatal(err)
-	}
-	schema, err := UnmarshalLayer(schMap, nil)
+	schema, err := UnmarshalLayerFromSlice([]byte(schStr))
 	if err != nil {
 		t.Error(err)
 	}
@@ -167,15 +157,11 @@ func (tc ingestTest) testObjectAsEdge(t *testing.T) {
 // //  --arr-->elem1
 // //       -->elem2
 func (tc ingestTest) TestArrayAsEdge(t *testing.T) {
-	var schMap interface{}
 	schStr, err := ioutil.ReadFile("testdata/object_as_edge_test.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
-		t.Fatal(err)
-	}
-	schema, err := UnmarshalLayer(schMap, nil)
+	schema, err := UnmarshalLayerFromSlice([]byte(schStr))
 	if err != nil {
 		t.Error(err)
 	}

@@ -2,752 +2,1649 @@
     {
         "name": "BasicCompose",
         "base": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id": "root",
-                "ls:Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": "ls:Value"
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
                     },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": "flg1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3"
+                        ]
+                    }
+                }
+            ]
+        },
+        "overlays": [
+            {
+                "nodes": [
                     {
-                        "@id":  "attr2" ,
-                        "@type": "ls:Value",
-                        "ls:privacy": [
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/valueType",
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Object"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "root"
+                        },
+                        "edges": [
                             {
-                                "@value": "flg1"
+                                "to": 2,
+                                "label": "https://lschema.org/Object/attributes"
+                            },
+                            {
+                                "to": 3,
+                                "label": "https://lschema.org/Object/attributes"
+                            },
+                            {
+                                "to": 4,
+                                "label": "https://lschema.org/Object/attributes"
                             }
                         ]
                     },
                     {
-                        "@id":"attr3",
-                        "@type": "ls:Value",
-                        "ls:privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"}
-                        ]
-                    }
-                ]
-            }
-        },
-        "overlays": [
-            {
-                "@context": {
-                    "ls":"https://lschema.org/"
-                },
-                "@type":"ls:Overlay",
-                "@id": "http://testOvl",
-                "https://lschema.org/layer": {
-                    "@type": ["https://lschema.org/Object",
-                              "https://lschema.org/valueType"],
-                    "@id": "root",
-                    "ls:Object/attributes": [
-                        {
-                            "@id":"attr1",
-                            "@type": "ls:Value",
-                            "http://someKey" : [
-                                {"@value": "someValue"}
-                            ]
-                        },
-                        {
-                            "@id":"attr2",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg1"}
-                            ]
-                        },
-                        {
-                            "@id": "attr3",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg2"},
-                                {"@value": "addFlg3"}
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://someKey": "someValue",
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "attr1"
+                        }
+                    },
+                    {
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 1,
+                            "https://lschema.org/nodeId": "attr2",
+                            "https://lschema.org/privacy": "addFlg1"
+                        }
+                    },
+                    {
+                        "n": 4,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 2,
+                            "https://lschema.org/nodeId": "attr3",
+                            "https://lschema.org/privacy": [
+                                "addFlg2",
+                                "addFlg3"
                             ]
                         }
-                    ]
-                }
-            }
-        ],
-        "expected": [{
-            "@id": "http://testschema",
-            "@type":["https://lschema.org/Schema"],
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "https://lschema.org/Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
                     },
                     {
-                        "@id":  "attr2" ,
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":1}],
-                        "https://lschema.org/privacy": [
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "http://testOvl"
+                        },
+                        "edges": [
                             {
-                                "@value": "flg1"
-                            },
-                            {"@value": "addFlg1"}
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
+                            }
                         ]
-                    },
-                    {
-                        "@id":"attr3",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":2}],
-                        "https://lschema.org/privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"},
-                            {"@value": "addFlg2"},
-                            {"@value": "addFlg3"}
-                         ]
                     }
                 ]
-            }]
-        }]
+            }
+        ],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": [
+                            "flg1",
+                            "addFlg1"
+                        ]
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3",
+                            "addFlg2",
+                            "addFlg3"
+                        ]
+                    }
+                }
+            ]
+        }
     },
     {
         "name": "RootAnnotations",
         "base": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id": "https://root",
-                "ls:Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": "ls:Value"
+            "nodes": [
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/valueType",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "https://root"
                     },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": "flg1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3"
+                        ]
+                    }
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                }
+            ]
+        },
+        "overlays": [
+            {
+                "nodes": [
                     {
-                        "@id":  "attr2" ,
-                        "@type": "ls:Value",
-                        "ls:privacy": [
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "http://testOvl"
+                        },
+                        "edges": [
                             {
-                                "@value": "flg1"
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
                             }
                         ]
                     },
                     {
-                        "@id":"attr3",
-                        "@type": "ls:Value",
-                        "ls:privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"}
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/Object",
+                            "https://lschema.org/valueType",
+                            "https://lschema.org/Attribute"
+                        ],
+                        "properties": {
+                            "https://annotation": "value",
+                            "https://lschema.org/nodeId": "https://root"
+                        },
+                        "edges": [
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/Object/attributes"
+                            },
+                            {
+                                "to": 3,
+                                "label": "https://lschema.org/Object/attributes"
+                            },
+                            {
+                                "to": 4,
+                                "label": "https://lschema.org/Object/attributes"
+                            }
                         ]
+                    },
+                    {
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://someKey": "someValue",
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "attr1"
+                        }
+                    },
+                    {
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Value",
+                            "https://lschema.org/Attribute"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 1,
+                            "https://lschema.org/nodeId": "attr2",
+                            "https://lschema.org/privacy": "addFlg1"
+                        }
+                    },
+                    {
+                        "n": 4,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 2,
+                            "https://lschema.org/nodeId": "attr3",
+                            "https://lschema.org/privacy": [
+                                "addFlg2",
+                                "addFlg3"
+                            ]
+                        }
                     }
                 ]
             }
-        },
-        "overlays": [
-            {
-                "@context": {
-                    "ls":"https://lschema.org/"
+        ],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
                 },
-                "@type":"ls:Overlay",
-                "@id": "http://testOvl",
-                "https://lschema.org/layer": {
-                    "@type": ["https://lschema.org/Object",
-                              "https://lschema.org/valueType"],
-                    "@id": "https://root",
-                    "https://annotation":"value",
-                    "ls:Object/attributes": [
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": [
+                            "flg1",
+                            "addFlg1"
+                        ]
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3",
+                            "addFlg2",
+                            "addFlg3"
+                        ]
+                    }
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
                         {
-                            "@id":"attr1",
-                            "@type": "ls:Value",
-                            "http://someKey" : [
-                                {"@value": "someValue"}
-                            ]
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://annotation": "value",
+                        "https://lschema.org/nodeId": "https://root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
                         },
                         {
-                            "@id":"attr2",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg1"}
-                            ]
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
                         },
                         {
-                            "@id": "attr3",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg2"},
-                                {"@value": "addFlg3"}
-                            ]
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
                         }
                     ]
                 }
-            }
-        ],
-        "expected": [{
-            "@id": "http://testschema",
-            "@type":["https://lschema.org/Schema"],
-            "https://lschema.org/layer": [{
-                "@id": "https://root",
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "https://annotation":[
-                    {
-                        "@value":"value"
-                    }
-                ],
-                "https://lschema.org/Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
-                    },
-                    {
-                        "@id":  "attr2" ,
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":1}],
-                        "https://lschema.org/privacy": [
-                            {
-                                "@value": "flg1"
-                            },
-                            {"@value": "addFlg1"}
-                        ]
-                    },
-                    {
-                        "@id":"attr3",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":2}],
-                        "https://lschema.org/privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"},
-                            {"@value": "addFlg2"},
-                            {"@value": "addFlg3"}
-                         ]
-                    }
-                ]
-            }]
-        }]
+            ]
+        }
     },
 
     {
         "name": "ArrayCompose",
         "base": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id": "root",
-                "ls:Object/attributes": [
-                    {
-                        "@id": "array",
-                        "@type": "ls:Array",
-                        "ls:Array/elements":  {
-                            "@id": "http://items",
-                            "@type": "ls:Value"
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
                         }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Array"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "array"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Array/elements"
+                        }
+                    ]
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://items"
                     }
-                ]
-            }
+                }
+            ]
         },
         "overlays": [
             {
-                "@context": {
-                    "ls":"https://lschema.org/"
-                },
-                "@type":"ls:Overlay",
-                "@id": "http://testschema",
-                "https://lschema.org/layer": {
-                    "@type": ["https://lschema.org/Object",
-                              "https://lschema.org/valueType"],
-                    "@id":"root",
-                    "ls:Object/attributes": [
-                        {
-                            "@id": "array",
-                            "@type": "ls:Array",
-                            "ls:Array/elements":  {
-                                "@id": "http://items",
-                                "@type": "ls:Value",
-                                "http://annotation": "value"
-                            }
-                        }
-                    ]
-                }
-            }
-        ],
-        "expected": [{
-            "@type":["https://lschema.org/Schema"],
-            "@id": "http://testschema",
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "https://lschema.org/Object/attributes": [
+                "nodes": [
                     {
-                        "@id": "array",
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "@type": ["https://lschema.org/Array","https://lschema.org/Attribute"],
-                        "https://lschema.org/Array/elements":  [{
-                            "@id": "http://items",
-                            "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                            "http://annotation": [{"@value":"value"}]
-                        }]
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/Object",
+                            "https://lschema.org/valueType",
+                            "https://lschema.org/Attribute"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "root"
+                        },
+                        "edges": [
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/Object/attributes"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Array"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "array"
+                        },
+                        "edges": [
+                            {
+                                "to": 3,
+                                "label": "https://lschema.org/Array/elements"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://annotation": "value",
+                            "https://lschema.org/nodeId": "http://items"
+                        }
+                    },
+                    {
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "http://testschema"
+                        },
+                        "edges": [
+                            {
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
+                            }
+                        ]
                     }
                 ]
-            }]
-        }]
+            }
+        ],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Array"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "array"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Array/elements"
+                        }
+                    ]
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "http://annotation": "value",
+                        "https://lschema.org/nodeId": "http://items"
+                    }
+                }
+            ]
+        }
     },
 
     {
         "name": "PolymorphicCompose",
         "base": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "ls:Object/attributes": [
-                    {
-                        "@id": "attr1",
-                        "@type": "ls:Polymorphic",
-                        "ls:Polymorphic/oneOf": [
-                            {
-                                "@list": [
-                                    {
-                                        "@id": "id1",
-                                        "@type": "ls:Value"
-                                    }
-                                ]
-                            }
-                        ]
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Polymorphic"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Polymorphic/oneOf"
+                        }
+                    ]
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "id1"
                     }
-                ]
-            }
+                }
+            ]
         },
         "overlays": [
             {
-                "@context": {
-                    "ls":"https://lschema.org/"
-                },
-                "@type":"ls:Overlay",
-                "@id": "http://testschema",
-                "https://lschema.org/layer": {
-                    "@type": ["https://lschema.org/Object",
-                              "https://lschema.org/valueType"],
-                    "@id":"root",
-                    "ls:Object/attributes": [
-                        {
-                            "@id": "attr1",
-                            "@type": "ls:Polymorphic",
-                            "ls:Polymorphic/oneOf": [
-                                {
-                                    "@list": [
-                                        {
-                                            "@id": "id1",
-                                            "@type": "ls:Value",
-                                            "http://annotation": "value"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-        ],
-        "expected": [{
-            "@type":["https://lschema.org/Schema"],
-            "@id": "http://testschema",
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "https://lschema.org/Object/attributes": [
+                "nodes": [
                     {
-                        "@id": "attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Polymorphic"],
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "https://lschema.org/Polymorphic/oneOf":  [
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Object",
+                            "https://lschema.org/valueType"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "root"
+                        },
+                        "edges": [
                             {
-                                "@list": [{
-                                    "@id": "id1",
-                                    "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                                    "https://lschema.org/attributeIndex": [{"@value":0}],
-                                    "http://annotation": [{"@value":"value"}]
-                                }]
+                                "to": 3,
+                                "label": "https://lschema.org/Object/attributes"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://annotation": "value",
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "id1"
+                        }
+                    },
+                    {
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Polymorphic"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "attr1"
+                        },
+                        "edges": [
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/Polymorphic/oneOf"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "http://testschema"
+                        },
+                        "edges": [
+                            {
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
                             }
                         ]
                     }
                 ]
-            }]
-        }]
+            }
+        ],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://annotation": "value",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "id1"
+                    }
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Polymorphic"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Polymorphic/oneOf"
+                        }
+                    ]
+                }
+            ]
+        }
     },
 
     {
         "name": "ComposeAnnotation",
-        "base": {
-            "@context": "../../schemas/ls.json",
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id": "root",
-                "ls:Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": "ls:Value"
+        "base":{
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
                     },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3"
+                        ]
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": "flg1"
+                    }
+                }
+            ]
+        },
+        "overlays": [
+            {
+                "nodes": [
                     {
-                        "@id":  "attr2" ,
-                        "@type": "ls:Value",
-                        "ls:privacy": [
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/compose": "override",
+                            "https://lschema.org/nodeId": "http://testOvl"
+                        },
+                        "edges": [
                             {
-                                "@value": "flg1"
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
                             }
                         ]
                     },
                     {
-                        "@id":"attr3",
-                        "@type": "ls:Value",
-                        "ls:privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"}
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/valueType",
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Object"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "root"
+                        },
+                        "edges": [
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/Object/attributes"
+                            },
+                            {
+                                "to": 3,
+                                "label": "https://lschema.org/Object/attributes"
+                            },
+                            {
+                                "to": 4,
+                                "label": "https://lschema.org/Object/attributes"
+                            }
                         ]
-                    }
-                ]
-            }
-        },
-        "overlays": [
-            {
-                "@context": "../../schemas/ls.json",
-                "@type":"ls:Overlay",
-                "@id": "http://testOvl",
-                "ls:compose": "override",
-                "https://lschema.org/layer": {
-                    "@type": ["https://lschema.org/Object",
-                              "https://lschema.org/valueType"],
-                    "@id": "root",
-                    "ls:Object/attributes": [
-                        {
-                            "@id":"attr1",
-                            "@type": "ls:Value",
-                            "http://someKey" : [
-                                {"@value": "someValue"}
-                            ]
-                        },
-                        {
-                            "@id":"attr2",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg1"}
-                            ]
-                        },
-                        {
-                            "@id": "attr3",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg2"},
-                                {"@value": "addFlg3"}
+                    },
+                    {
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://someKey": "someValue",
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "attr1"
+                        }
+                    },
+                    {
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 1,
+                            "https://lschema.org/nodeId": "attr2",
+                            "https://lschema.org/privacy": "addFlg1"
+                        }
+                    },
+                    {
+                        "n": 4,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 2,
+                            "https://lschema.org/nodeId": "attr3",
+                            "https://lschema.org/privacy": [
+                                "addFlg2",
+                                "addFlg3"
                             ]
                         }
-                    ]
-                }
-            }
-        ],
-        "expected": [{
-            "@id": "http://testschema",
-            "@type":["https://lschema.org/Schema"],
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "https://lschema.org/Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
-                    },
-                    {
-                        "@id":  "attr2" ,
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":1}],
-                        "https://lschema.org/privacy": [
-                            {"@value": "addFlg1"}
-                        ]
-                    },
-                    {
-                        "@id":"attr3",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":2}],
-                        "https://lschema.org/privacy": [
-                            {"@value": "addFlg2"},
-                            {"@value": "addFlg3"}
-                         ]
                     }
                 ]
-            }]
-        }]
+            }
+        ],
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": "addFlg1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "addFlg2",
+                            "addFlg3"
+                        ]
+                    }
+                }
+            ]
+        }
     },
 
     {
         "name": "AttrCompose",
         "base": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id": "root",
-                "ls:Object/attributes": [
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/valueType",
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": "flg1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3"
+                        ]
+                    }
+                }
+            ]
+        },
+        "overlays": [
+            {
+                "nodes": [
                     {
-                        "@id":  "attr1",
-                        "@type": "ls:Value"
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "attr2",
+                            "https://lschema.org/privacy": "addFlg1"
+                        }
                     },
                     {
-                        "@id":  "attr2" ,
-                        "@type": "ls:Value",
-                        "ls:privacy": [
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "attr3",
+                            "https://lschema.org/privacy": [
+                                "addFlg2",
+                                "addFlg3"
+                            ]
+                        }
+                    },
+                    {
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "http://testOvl"
+                        },
+                        "edges": [
                             {
-                                "@value": "flg1"
+                                "to": 1,
+                                "label": "https://lschema.org/attributeOverlays"
+                            },
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/attributeOverlays"
+                            },
+                            {
+                                "to": 3,
+                                "label": "https://lschema.org/attributeOverlays"
                             }
                         ]
                     },
                     {
-                        "@id":"attr3",
-                        "@type": "ls:Value",
-                        "ls:privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"}
-                        ]
-                    }
-                ]
-            }
-        },
-        "overlays": [
-            {
-                "@context": {
-                    "ls":"https://lschema.org/"
-                },
-                "@type":"ls:Overlay",
-                "@id": "http://testOvl",
-                "https://lschema.org/attributeOverlays": [
-                    {"@list": [
-                        {
-                            "@id":"attr1",
-                            "@type": "ls:Value",
-                            "http://someKey" : [
-                                {"@value": "someValue"}
-                            ]
-                        },
-                        {
-                            "@id":"attr2",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg1"}
-                            ]
-                        },
-                        {
-                            "@id": "attr3",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg2"},
-                                {"@value": "addFlg3"}
-                            ]
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://someKey": "someValue",
+                            "https://lschema.org/nodeId": "attr1"
                         }
-                    ]
                     }
                 ]
             }
         ],
-        "expected": [{
-            "@id": "http://testschema",
-            "@type":["https://lschema.org/Schema"],
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"root",
-                "https://lschema.org/Object/attributes": [
-                    {
-                        "@id":  "attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
                     },
-                    {
-                        "@id":  "attr2" ,
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":1}],
-                        "https://lschema.org/privacy": [
-                            {
-                                "@value": "flg1"
-                            },
-                            {"@value": "addFlg1"}
-                        ]
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
                     },
-                    {
-                        "@id":"attr3",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":2}],
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "attr3",
                         "https://lschema.org/privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"},
-                            {"@value": "addFlg2"},
-                            {"@value": "addFlg3"}
-                         ]
+                            "flg2",
+                            "flg3",
+                            "addFlg2",
+                            "addFlg3"
+                        ]
                     }
-                ]
-            }]
-        }]
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "attr1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "attr2",
+                        "https://lschema.org/privacy": [
+                            "flg1",
+                            "addFlg1"
+                        ]
+                    }
+                }
+            ]
+        }
     },
     {
         "name": "nsMap",
         "base": {
-            "@context": {
-                "ls":"https://lschema.org/"
-            },
-            "@type":"ls:Schema",
-            "@id": "http://testschema",
-            "https://lschema.org/layer": {
-                "@type": ["https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id": "https://1/root",
-                "ls:Object/attributes": [
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/valueType",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "https://1/root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "https://1/attr1"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "https://1/attr2",
+                        "https://lschema.org/privacy": "flg1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "https://1/attr3",
+                        "https://lschema.org/privacy": [
+                            "flg2",
+                            "flg3"
+                        ]
+                    }
+                }
+            ]
+        }        ,
+        "overlays": [
+            {
+                "nodes": [
                     {
-                        "@id":  "https://1/attr1",
-                        "@type": "ls:Value"
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "https://2/attr2",
+                            "https://lschema.org/privacy": "addFlg1"
+                        }
                     },
                     {
-                        "@id":  "https://1/attr2" ,
-                        "@type": "ls:Value",
-                        "ls:privacy": [
+                        "n": 3,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "https://2/attr3",
+                            "https://lschema.org/privacy": [
+                                "addFlg2",
+                                "addFlg3"
+                            ]
+                        }
+                    },
+                    {
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Overlay"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "http://testOvl",
+                            "https://lschema.org/nsMap": "https://1/ -> https://2/"
+                        },
+                        "edges": [
                             {
-                                "@value": "flg1"
+                                "to": 1,
+                                "label": "https://lschema.org/attributeOverlays"
+                            },
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/attributeOverlays"
+                            },
+                            {
+                                "to": 3,
+                                "label": "https://lschema.org/attributeOverlays"
                             }
                         ]
                     },
                     {
-                        "@id":"https://1/attr3",
-                        "@type": "ls:Value",
-                        "ls:privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"}
-                        ]
-                    }
-                ]
-            }
-        },
-        "overlays": [
-            {
-                "@context": {
-                    "ls":"https://lschema.org/"
-                },
-                "@type":"ls:Overlay",
-                "@id": "http://testOvl",
-                "ls:nsMap": "https://1/ -> https://2/",
-                "https://lschema.org/attributeOverlays": [
-                    {"@list": [
-                        {
-                            "@id":"https://2/attr1",
-                            "@type": "ls:Value",
-                            "http://someKey" : [
-                                {"@value": "someValue"}
-                            ]
-                        },
-                        {
-                            "@id":"https://2/attr2",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg1"}
-                            ]
-                        },
-                        {
-                            "@id": "https://2/attr3",
-                            "@type": "ls:Value",
-                            "ls:privacy" : [
-                                {"@value": "addFlg2"},
-                                {"@value": "addFlg3"}
-                            ]
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "http://someKey": "someValue",
+                            "https://lschema.org/nodeId": "https://2/attr1"
                         }
-                    ]
                     }
                 ]
             }
         ],
-        "expected": [{
-            "@id": "http://testschema",
-            "@type":["https://lschema.org/Schema"],
-            "https://lschema.org/layer": [{
-                "@type": ["https://lschema.org/Attribute",
-                          "https://lschema.org/Object",
-                          "https://lschema.org/valueType"],
-                "@id":"https://2/root",
-                "https://lschema.org/Object/attributes": [
-                    {
-                        "@id":  "https://2/attr1",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":0}],
-                        "http://someKey" : [
-                            {"@value": "someValue"}
-                        ]
+        "expected":{
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema"
                     },
-                    {
-                        "@id":  "https://2/attr2" ,
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":1}],
-                        "https://lschema.org/privacy": [
-                            {
-                                "@value": "flg1"
-                            },
-                            {"@value": "addFlg1"}
-                        ]
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/valueType",
+                        "https://lschema.org/Object"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "https://2/root"
                     },
-                    {
-                        "@id":"https://2/attr3",
-                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
-                        "https://lschema.org/attributeIndex": [{"@value":2}],
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 2,
+                        "https://lschema.org/nodeId": "https://2/attr3",
                         "https://lschema.org/privacy": [
-                            {"@value": "flg2"},
-                            {"@value": "flg3"},
-                            {"@value": "addFlg2"},
-                            {"@value": "addFlg3"}
-                         ]
+                            "flg2",
+                            "flg3",
+                            "addFlg2",
+                            "addFlg3"
+                        ]
                     }
-                ]
-            }]
-        }]
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "http://someKey": "someValue",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "https://2/attr1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "https://2/attr2",
+                        "https://lschema.org/privacy": [
+                            "flg1",
+                            "addFlg1"
+                        ]
+                    }
+                }
+            ]
+        }
     }
-
 ]

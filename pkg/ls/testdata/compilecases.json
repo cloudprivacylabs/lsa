@@ -3,36 +3,88 @@
         "name": "BasicRef",
         "schemas": [
             {
-                "@context": "../../schemas/ls.json",
-                "@type": "Schema",
-                "@id": "urn:root",
-                "layer": {
-                    "@type": "Object",
-                    "@id": "root",
-                    "attributeList": [
-                        {
-                            "@id": "https://ref",
-                            "@type": "Reference",
-                            "ref": "urn:2"
+                "nodes": [
+                    {
+                        "n": 0,
+                        "labels": ["https://lschema.org/Schema"],
+                        "properties": {
+                            "https://lschema.org/nodeId": "urn:root"
+                        },
+                        "edges": [
+                            {
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 1,
+                        "labels": [ "https://lschema.org/Object", "https://lschema.org/Attribute"],
+                        "properties": {
+                            "https://lschema.org/nodeId": "root"
+                        },
+                        "edges": [
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/Object/attributeList"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 2,
+                        "labels": [ "https://lschema.org/Attribute", "https://lschema.org/Reference"],
+                        "properties": {
+                            "https://lschema.org/Reference/ref": "urn:2"
                         }
-                    ]
-                }
+                    }
+                ]
             },
             {
-                "@context": "../../schemas/ls.json",
-                "@type": "Schema",
-                "@id": "urn:2",
-                "layer": {
-                    "@type": "Object",
-                    "@id": "root2",
-                    "https://annotation": "value",
-                    "attributeList": [
-                        {
-                            "@id": "https://refed",
-                            "@type": "Value"
+                "nodes": [
+                    {
+                        "n": 0,
+                        "labels": [
+                            "https://lschema.org/Schema"
+                        ],
+                        "properties": {
+                            "https://lschema.org/nodeId": "urn:2"
+                        },
+                        "edges": [
+                            {
+                                "to": 1,
+                                "label": "https://lschema.org/layer"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 1,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Object"
+                        ],
+                        "properties": {
+                            "https://annotation": "value",
+                            "https://lschema.org/nodeId": "root2"
+                        },
+                        "edges": [
+                            {
+                                "to": 2,
+                                "label": "https://lschema.org/Object/attributeList"
+                            }
+                        ]
+                    },
+                    {
+                        "n": 2,
+                        "labels": [
+                            "https://lschema.org/Attribute",
+                            "https://lschema.org/Value"
+                        ],
+                        "properties": {
+                            "https://lschema.org/attributeIndex": 0,
+                            "https://lschema.org/nodeId": "https://refed"
                         }
-                    ]
-                }
+                    }
+                ]
             }
         ],
         "expected": {

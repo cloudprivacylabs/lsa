@@ -15,10 +15,13 @@
 package ls
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 type TestCase interface {
@@ -60,9 +63,58 @@ func ReadLayerFromFile(f string) (*Layer, error) {
 }
 
 func UnmarshalLayerFromSlice(in []byte) (*Layer, error) {
-	var v interface{}
-	if err := json.Unmarshal(in, &v); err != nil {
+	m := JSONMarshaler{}
+	g := NewLayerGraph()
+	if err := m.Unmarshal(in, g); err != nil {
 		return nil, err
 	}
-	return UnmarshalLayer(v, nil)
+	return LayersFromGraph(g)[0], nil
+}
+
+func UnmarshalLayerFromTree(in any) (*Layer, error) {
+	b, _ := json.Marshal(in)
+	m := JSONMarshaler{}
+	g := NewLayerGraph()
+	if err := m.Unmarshal(b, g); err != nil {
+		return nil, err
+	}
+	return LayersFromGraph(g)[0], nil
+}
+
+func GraphFromTree(in any) (*lpg.Graph, error) {
+	b, _ := json.Marshal(in)
+	m := JSONMarshaler{}
+	g := lpg.NewGraph()
+	if err := m.Unmarshal(b, g); err != nil {
+		return nil, err
+	}
+	return g, nil
+}
+
+func DefaultNodeEquivalenceFunc(n1, n2 *lpg.Node) bool {
+	if !n1.GetLabels().IsEqual(n2.GetLabels()) {
+		return false
+	}
+	if !IsPropertiesEqual(PropertiesAsMap(n1), PropertiesAsMap(n2)) {
+		return false
+	}
+	return true
+}
+
+func DefaultEdgeEquivalenceFunc(e1, e2 *lpg.Edge) bool {
+	if e1.GetLabel() != e2.GetLabel() {
+		return false
+	}
+	if !IsPropertiesEqual(PropertiesAsMap(e1), PropertiesAsMap(e2)) {
+		return false
+	}
+	return true
+}
+
+func MarshalIndentGraph(g *lpg.Graph) string {
+	m := NewJSONMarshaler(nil)
+	b, _ := m.Marshal(g)
+	dst := bytes.Buffer{}
+	json.Indent(&dst, b, "", "  ")
+	return dst.String()
 }

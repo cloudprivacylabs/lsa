@@ -25,7 +25,7 @@ import (
 
 type compileTestCase struct {
 	Name     string          `json:"name"`
-	Schemas  []interface{}   `json:"schemas"`
+	Schemas  []any           `json:"schemas"`
 	Expected json.RawMessage `json:"expected"`
 }
 
@@ -35,7 +35,7 @@ func (tc compileTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
 	schemas := make([]*Layer, 0)
 	for _, sch := range tc.Schemas {
-		l, err := UnmarshalLayer(sch, nil)
+		l, err := UnmarshalLayerFromTree(sch)
 		if err != nil {
 			t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 			return
@@ -77,11 +77,7 @@ func TestCompileIncludeAttribute(t *testing.T) {
 			if err != nil {
 				return nil, err
 			}
-			var v interface{}
-			if err := json.Unmarshal([]byte(data), &v); err != nil {
-				return nil, err
-			}
-			return UnmarshalLayer(v, nil)
+			return UnmarshalLayerFromSlice([]byte(data))
 		}),
 		CGraph: &DefaultCompiledGraph{},
 	}

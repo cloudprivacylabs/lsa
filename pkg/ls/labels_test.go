@@ -1,7 +1,6 @@
 package ls
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg/v2"
@@ -9,53 +8,101 @@ import (
 
 func TestProcessLabeledAs(t *testing.T) {
 	schStr := `
-	{
-		"@context": "../../schemas/ls.json",
-		"@type":"ls:Schema",
-		"@id": "http://testschema",
-		"https://lschema.org/layer": {
-			"@type": ["https://lschema.org/Object",
-					  "https://lschema.org/valueType"],
-			"@id": "root",
-			"ls:Object/attributes": [
-				{
-					"@id":  "attr1",
-					"@type": "ls:Value",
-					"ls:labeledAs": "SOMELABEL"
-				},
-				{
-					"@id":  "attr2" ,
-					"@type": "ls:Value",
-					"ls:labeledAs": "ANOTHERLABEL",
-					"ls:privacy": [
-						{
-							"@value": "flg1"
-						}
-					]
-				},
-				{
-					"@id":"attr3",
-					"@type": "ls:Value",
-					"ls:labeledAs": [
-						"thirdLabel",
-						"fourthLabel"
-					],
-					"ls:privacy": [
-						{"@value": "flg2"},
-						{"@value": "flg3"}
-					]
-				}
-			]
-		}
-	}
+{
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://testschema"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/valueType",
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "root"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/labeledAs": [
+          "SOMELABEL"
+        ],
+        "https://lschema.org/nodeId": "attr1"
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/labeledAs": [
+          "ANOTHERLABEL"
+        ],
+        "https://lschema.org/nodeId": "attr2",
+        "https://lschema.org/privacy": "flg1"
+      }
+    },
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Value",
+        "https://lschema.org/Attribute"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 2,
+        "https://lschema.org/labeledAs": [
+          "thirdLabel",
+          "fourthLabel"
+        ],
+        "https://lschema.org/nodeId": "attr3",
+        "https://lschema.org/privacy": [
+          "flg2",
+          "flg3"
+        ]
+      }
+    }
+  ]
+}
 	`
 
-	var schMap interface{}
-	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
-		t.Fatal(err)
-	}
-
-	schema, err := UnmarshalLayer(schMap, nil)
+	schema, err := UnmarshalLayerFromSlice([]byte(schStr))
 	if err != nil {
 		t.Error(err)
 	}

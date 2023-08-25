@@ -1,26 +1,87 @@
 {
-    "@context": "../../schemas/ls.json",
-    "@id": "https://2",
-    "@type": "Schema",
-    "valueType": "2",
-    "layer": {
-        "@type": "Object",
-        "@id": "2",
-        "entityIdFields": "idField",
-        "attributes": {
-            "idField": {
-                "@type": "Value"
-            },
-            "https://rootid": {
-                "@type":"Value"
-            },
-            "https://test_ref": {
-                "@type": "Reference",
-                "ref": "https://root",
-                "fk":"https://rootid",
-                "dir": "from",
-                "ingestAs":"edge"
-            }
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "https://2",
+        "https://lschema.org/valueType": "2"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
         }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object",
+        "2"
+      ],
+      "properties": {
+        "https://lschema.org/entityIdFields": [
+          "idField"
+        ],
+        "https://lschema.org/nodeId": "2"
+      },
+      "edges": [
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 2,
+        "https://lschema.org/nodeId": "idField"
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "https://rootid"
+      }
+    },
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Reference"
+      ],
+      "properties": {
+        "https://lschema.org/Reference/dir": "from",
+        "https://lschema.org/Reference/fk": [
+          "https://rootid"
+        ],
+        "https://lschema.org/Reference/ref": "https://root",
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/ingestAs": "edge",
+        "https://lschema.org/nodeId": "https://test_ref"
+      }
     }
+  ]
 }

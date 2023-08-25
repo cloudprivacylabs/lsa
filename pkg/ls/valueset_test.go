@@ -15,7 +15,6 @@
 package ls
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg/v2"
@@ -23,34 +22,77 @@ import (
 
 func TestBasicVS(t *testing.T) {
 	schText := `{
-"@context": "../../schemas/ls.json",
-"@id":"http://1",
-"@type": "Schema",
-"valueType": "test",
-"layer" :{
-  "@type": "Object",
-"https://lschema.org/entitySchema":"test",
- "@id": "schroot",
-  "attributes": {
-    "src": {
-      "@type": "Value",
-      "attributeName": "src",
-      "https://lschema.org/vs/context":"schroot",
-      "https://lschema.org/vs/resultValues": "tgt"
+  "nodes": [
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "tgt",
+        "https://lschema.org/nodeId": "tgt"
+      }
     },
-    "tgt": {
-      "@type": "Value",
-      "attributeName": "tgt"
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://1",
+        "https://lschema.org/valueType": "test"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object",
+        "test"
+      ],
+      "properties": {
+        "https://lschema.org/entitySchema": "test",
+        "https://lschema.org/nodeId": "schroot"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "src",
+        "https://lschema.org/nodeId": "src",
+        "https://lschema.org/vs/context": "schroot",
+        "https://lschema.org/vs/resultValues": [
+          "tgt"
+        ]
+      }
     }
-  }
+  ]
 }
-}`
-	var v interface{}
-	if err := json.Unmarshal([]byte(schText), &v); err != nil {
-		t.Error(err)
-		return
-	}
-	layer, err := UnmarshalLayer(v, nil)
+`
+	layer, err := UnmarshalLayerFromSlice([]byte(schText))
 	if err != nil {
 		t.Error(err)
 		return
@@ -98,35 +140,80 @@ func TestBasicVS(t *testing.T) {
 
 func TestBasicVSExpr(t *testing.T) {
 	schText := `{
-"@context": "../../schemas/ls.json",
-"@id":"http://1",
-"@type": "Schema",
-"valueType": "test",
-"layer" :{
-  "@type": "Object",
-"https://lschema.org/entitySchema":"test",
- "@id": "schroot",
-  "attributes": {
-    "src": {
-      "@type": "Value",
-      "attributeName": "src",
-      "https://lschema.org/vs/context":"schroot",
-      "https://lschema.org/vs/request": "return this as KEY",
-      "https://lschema.org/vs/resultValues": "tgt"
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://1",
+        "https://lschema.org/valueType": "test"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
     },
-    "tgt": {
-      "@type": "Value",
-      "attributeName": "tgt"
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object",
+        "test"
+      ],
+      "properties": {
+        "https://lschema.org/entitySchema": "test",
+        "https://lschema.org/nodeId": "schroot"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "src",
+        "https://lschema.org/nodeId": "src",
+        "https://lschema.org/vs/context": "schroot",
+        "https://lschema.org/vs/request": [
+          "return this as KEY"
+        ],
+        "https://lschema.org/vs/resultValues": [
+          "tgt"
+        ]
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "tgt",
+        "https://lschema.org/nodeId": "tgt"
+      }
     }
-  }
+  ]
 }
-}`
-	var v interface{}
-	if err := json.Unmarshal([]byte(schText), &v); err != nil {
-		t.Error(err)
-		return
-	}
-	layer, err := UnmarshalLayer(v, nil)
+`
+	layer, err := UnmarshalLayerFromSlice([]byte(schText))
 	if err != nil {
 		t.Error(err)
 		return
@@ -183,52 +270,140 @@ func TestBasicVSExpr(t *testing.T) {
 
 func TestStructuredVS(t *testing.T) {
 	schText := `{
-"@context": "../../schemas/ls.json",
-"@id":"http://1",
-"@type": "Schema",
-"valueType": "test",
-"layer" :{
-  "@type": "Object",
-"https://lschema.org/entitySchema":"test",
- "@id": "schroot",
- "https://lschema.org/entitySchema":"test",
-  "attributes": {
-    "src": {
-      "@type": "Object",
-      "attributeName": "src",
-      "https://lschema.org/vs/context":"schroot",
-      "https://lschema.org/vs/requestKeys": ["c","s"],
-      "https://lschema.org/vs/requestValues": ["code","system"],
-      "https://lschema.org/vs/resultKeys": ["tc","ts"],
-      "https://lschema.org/vs/resultValues": ["tgtcode","tgtsystem"],
-      "attributes": {
-        "code": {
-          "@type": "Value",
-          "attributeName": "code"
-        },
-        "system": {
-          "@type": "Value",
-          "attributeName": "system"
-        }
+  "nodes": [
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 2,
+        "https://lschema.org/attributeName": "tgtsystem",
+        "https://lschema.org/nodeId": "tgtsystem"
       }
     },
-    "tgtcode": {
-       "@type": "Value",
-       "attributeName": "tgtcode"
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "code",
+        "https://lschema.org/nodeId": "code"
+      }
     },
-    "tgtsystem": {
-      "@type": "Value",
-      "attributeName": "tgtsystem"
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "src",
+        "https://lschema.org/nodeId": "src",
+        "https://lschema.org/vs/context": "schroot",
+        "https://lschema.org/vs/requestKeys": [
+          "c",
+          "s"
+        ],
+        "https://lschema.org/vs/requestValues": [
+          "code",
+          "system"
+        ],
+        "https://lschema.org/vs/resultKeys": [
+          "tc",
+          "ts"
+        ],
+        "https://lschema.org/vs/resultValues": [
+          "tgtcode",
+          "tgtsystem"
+        ]
+      },
+      "edges": [
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 5,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Value",
+        "https://lschema.org/Attribute"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "system",
+        "https://lschema.org/nodeId": "system"
+      }
+    },
+    {
+      "n": 6,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "tgtcode",
+        "https://lschema.org/nodeId": "tgtcode"
+      }
+    },
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://1",
+        "https://lschema.org/valueType": "test"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Object",
+        "https://lschema.org/Attribute",
+        "test"
+      ],
+      "properties": {
+        "https://lschema.org/entitySchema": "test",
+        "https://lschema.org/nodeId": "schroot"
+      },
+      "edges": [
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 6,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
     }
-  }
+  ]
 }
-}`
-	var v interface{}
-	if err := json.Unmarshal([]byte(schText), &v); err != nil {
-		t.Error(err)
-		return
-	}
-	layer, err := UnmarshalLayer(v, nil)
+`
+	layer, err := UnmarshalLayerFromSlice([]byte(schText))
 	if err != nil {
 		t.Error(err)
 		return
@@ -287,53 +462,141 @@ func TestStructuredVS(t *testing.T) {
 
 func TestStructuredVSProperty(t *testing.T) {
 	schText := `{
-"@context": "../../schemas/ls.json",
-"@id":"http://1",
-"@type": "Schema",
-"valueType": "test",
-"layer" :{
-"https://lschema.org/entitySchema":"test",
-  "@type": "Object",
- "@id": "schroot",
- "https://lschema.org/entitySchema":"test",
-  "attributes": {
-    "src": {
-      "@type": "Object",
-      "attributeName": "src",
-      "https://lschema.org/vs/context":"schroot",
-      "https://lschema.org/vs/requestKeys": ["c","s"],
-      "https://lschema.org/vs/requestValues": ["code","system"],
-      "https://lschema.org/vs/resultKeys": ["tc","ts"],
-      "https://lschema.org/vs/resultValues": ["tgtcode","tgtsystem"],
-      "attributes": {
-        "code": {
-          "@type": "Value",
-          "attributeName": "code"
-        },
-        "system": {
-          "@type": "Value",
-          "attributeName": "system",
-          "ingestAs": "property"
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://1",
+        "https://lschema.org/valueType": "test"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
         }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Object",
+        "https://lschema.org/Attribute",
+        "test"
+      ],
+      "properties": {
+        "https://lschema.org/entitySchema": "test",
+        "https://lschema.org/nodeId": "schroot"
+      },
+      "edges": [
+        {
+          "to": 6,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "system",
+        "https://lschema.org/ingestAs": "property",
+        "https://lschema.org/nodeId": "system"
       }
     },
-    "tgtcode": {
-       "@type": "Value",
-       "attributeName": "tgtcode"
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "tgtcode",
+        "https://lschema.org/nodeId": "tgtcode"
+      }
     },
-    "tgtsystem": {
-      "@type": "Value",
-      "attributeName": "tgtsystem"
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 2,
+        "https://lschema.org/attributeName": "tgtsystem",
+        "https://lschema.org/nodeId": "tgtsystem"
+      }
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "code",
+        "https://lschema.org/nodeId": "code"
+      }
+    },
+    {
+      "n": 6,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "src",
+        "https://lschema.org/nodeId": "src",
+        "https://lschema.org/vs/context": "schroot",
+        "https://lschema.org/vs/requestKeys": [
+          "c",
+          "s"
+        ],
+        "https://lschema.org/vs/requestValues": [
+          "code",
+          "system"
+        ],
+        "https://lschema.org/vs/resultKeys": [
+          "tc",
+          "ts"
+        ],
+        "https://lschema.org/vs/resultValues": [
+          "tgtcode",
+          "tgtsystem"
+        ]
+      },
+      "edges": [
+        {
+          "to": 5,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
     }
-  }
+  ]
 }
-}`
-	var v interface{}
-	if err := json.Unmarshal([]byte(schText), &v); err != nil {
-		t.Error(err)
-		return
-	}
-	layer, err := UnmarshalLayer(v, nil)
+`
+	layer, err := UnmarshalLayerFromSlice([]byte(schText))
 	if err != nil {
 		t.Error(err)
 		return
@@ -392,56 +655,157 @@ func TestStructuredVSProperty(t *testing.T) {
 
 func TestStructuredDeepVS(t *testing.T) {
 	schText := `{
-"@context": "../../schemas/ls.json",
-"@id":"http://1",
-"@type": "Schema",
-"valueType": "test",
-"layer" :{
-  "@type": "Object",
-"https://lschema.org/entitySchema":"test",
- "@id": "schroot",
-  "attributes": {
-    "test": {
-      "@type": "Object",
-      "attributeName": "test",
-      "https://lschema.org/vs/context":"schroot",
-      "https://lschema.org/vs/requestKeys": ["c","s"],
-      "https://lschema.org/vs/requestValues": ["code","system"],
-      "https://lschema.org/vs/resultKeys": ["tc","ts"],
-      "https://lschema.org/vs/resultValues": ["tgtcode","tgtsystem"],
-      "attributes": {
-        "code": {
-          "@type": "Value",
-          "attributeName": "code"
-        },
-        "system": {
-          "@type": "Value",
-          "attributeName": "system"
-        }
+  "nodes": [
+    {
+      "n": 7,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "code",
+        "https://lschema.org/nodeId": "code"
       }
     },
-    "obj": {
-      "@type": "Object",
-      "attributes": {
-        "tgtcode": {
-           "@type": "Value",
-           "attributeName": "tgtcode"
-        },
-        "tgtsystem": {
-         "@type": "Value",
-         "attributeName": "tgtsystem"
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://1",
+        "https://lschema.org/valueType": "test"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
         }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Object",
+        "https://lschema.org/Attribute",
+        "test"
+      ],
+      "properties": {
+        "https://lschema.org/entitySchema": "test",
+        "https://lschema.org/nodeId": "schroot"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "obj"
+      },
+      "edges": [
+        {
+          "to": 5,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 6,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "system",
+        "https://lschema.org/nodeId": "system"
+      }
+    },
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Object",
+        "https://lschema.org/Attribute"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "test",
+        "https://lschema.org/nodeId": "test",
+        "https://lschema.org/vs/context": "schroot",
+        "https://lschema.org/vs/requestKeys": [
+          "c",
+          "s"
+        ],
+        "https://lschema.org/vs/requestValues": [
+          "code",
+          "system"
+        ],
+        "https://lschema.org/vs/resultKeys": [
+          "tc",
+          "ts"
+        ],
+        "https://lschema.org/vs/resultValues": [
+          "tgtcode",
+          "tgtsystem"
+        ]
+      },
+      "edges": [
+        {
+          "to": 7,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "tgtcode",
+        "https://lschema.org/nodeId": "tgtcode"
+      }
+    },
+    {
+      "n": 6,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "tgtsystem",
+        "https://lschema.org/nodeId": "tgtsystem"
       }
     }
-  }
- }
-}`
-	var v interface{}
-	if err := json.Unmarshal([]byte(schText), &v); err != nil {
-		t.Error(err)
-		return
-	}
-	layer, err := UnmarshalLayer(v, nil)
+  ]
+}
+`
+	layer, err := UnmarshalLayerFromSlice([]byte(schText))
 	if err != nil {
 		t.Error(err)
 		return

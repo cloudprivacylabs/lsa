@@ -17,27 +17,29 @@ package ls
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 type composeTestCase struct {
-	Name     string        `json:"name"`
-	Base     interface{}   `json:"base"`
-	Overlays []interface{} `json:"overlays"`
-	Expected interface{}   `json:"expected"`
+	Name     string `json:"name"`
+	Base     any    `json:"base"`
+	Overlays []any  `json:"overlays"`
+	Expected any    `json:"expected"`
 }
 
 func (tc composeTestCase) GetName() string { return tc.Name }
 
 func (tc composeTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	base, err := UnmarshalLayer(tc.Base, nil)
+	base, err := UnmarshalLayerFromTree(tc.Base)
 	if err != nil {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
 
 	for i, o := range tc.Overlays {
-		ovl, err := UnmarshalLayer(o, nil)
+		ovl, err := UnmarshalLayerFromTree(o)
 		if err != nil {
 			t.Errorf("%s: Cannot unmarshal overlay %d: %v", tc.Name, i, err)
 			return
@@ -48,15 +50,14 @@ func (tc composeTestCase) Run(t *testing.T) {
 			return
 		}
 	}
-
-	marshaled, err := MarshalLayer(base)
+	expected, err := UnmarshalLayerFromTree(tc.Expected)
 	if err != nil {
-		t.Error(err)
+		t.Errorf("Cannot parse expected: %s", err)
+		return
 	}
-	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Expected)); err != nil {
-		expected, _ := json.MarshalIndent(ToMap(tc.Expected), "", "  ")
-		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")
-		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
+
+	if !lpg.CheckIsomorphism(expected.Graph, base.Graph, DefaultNodeEquivalenceFunc, DefaultEdgeEquivalenceFunc) {
+		t.Errorf("%s: Got:\n%s\n", tc.Name, MarshalIndentGraph(base.Graph))
 	}
 }
 

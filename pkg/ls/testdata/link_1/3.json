@@ -1,18 +1,51 @@
 {
-    "@context": "../../schemas/ls.json",
-    "@id": "https://3",
-    "@type": "Schema",
-    "valueType": "3",
-    "layer": {
-        "@type": "Object",
-        "@id": "3",
-        "attributes": {
-            "https://rootid": {
-                "@type":"Value",
-                "referenceFKFor": "https://root",
-                "referenceDir": "from",
-                "referenceLinkNode": "3"
-            }
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "https://3",
+        "https://lschema.org/valueType": "3"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
         }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object",
+        "3"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "3"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/Reference/dir": "from",
+        "https://lschema.org/Reference/fkFor": "https://root",
+        "https://lschema.org/Reference/linkNode": "3",
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "https://rootid"
+      }
     }
+  ]
 }

@@ -1,26 +1,94 @@
 {
-    "@context": "../../schemas/ls.json",
-    "@type": "Schema",
-    "@id": "testSchema",
-    "layer": {
-        "@id": "schemaRoot",
-        "@type": "Object",
-        "attributes": {
-            "attr1": { 
-                "@type": "Value" 
-            },
-            "attr2": { 
-                "@type": "Object",
-                "attributes": {
-                    "attr3": { 
-                        "@type": "Value"
-                    },
-                    "attr4": {
-                        "@type": "Value",
-                        "https://lschema.org/setValue": "match (this)<-[]-()-[]->(n {`https://lschema.org/schemaNodeId`:\"attr3\"}) return n.`https://lschema.org/value`"
-                    }
-                }
-            }
+  "nodes": [
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr1"
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr2"
+      },
+      "edges": [
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 5,
+          "label": "https://lschema.org/Object/attributes"
         }
+      ]
+    },
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr3"
+      }
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr4",
+        "https://lschema.org/setValue": "match (this)<-[]-()-[]->(n {`https://lschema.org/schemaNodeId`:\"attr3\"}) return n.`https://lschema.org/value`"
+      }
+    },
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "testSchema"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "schemaRoot"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
     }
+  ]
 }

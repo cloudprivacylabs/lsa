@@ -47,27 +47,8 @@ func (tc marshalTestCase) Run(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if !lpg.CheckIsomorphism(layer.Graph, g, func(n1, n2 *lpg.Node) bool {
-		if !n1.GetLabels().IsEqual(n2.GetLabels()) {
-			return false
-		}
-		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(n1), ls.PropertiesAsMap(n2)) {
-			return false
-		}
-		return true
-	}, func(e1, e2 *lpg.Edge) bool {
-		if e1.GetLabel() != e2.GetLabel() {
-			return false
-		}
-		if !ls.IsPropertiesEqual(ls.PropertiesAsMap(e1), ls.PropertiesAsMap(e2)) {
-			return false
-		}
-		return true
-	}) {
-		got, _ := m.Marshal(layer.Graph)
-		dst := bytes.Buffer{}
-		json.Indent(&dst, got, "", "  ")
-		t.Errorf("%s: Got:\n%s\n", tc.Name, dst.String())
+	if !lpg.CheckIsomorphism(layer.Graph, g, ls.DefaultNodeEquivalenceFunc, ls.DefaultEdgeEquivalenceFunc) {
+		t.Errorf("%s: Got:\n%s\n", tc.Name, ls.MarshalIndentGraph(layer.Graph))
 	}
 
 	if tc.Compacted != nil {

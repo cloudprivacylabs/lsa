@@ -17,33 +17,34 @@ package ls
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/cloudprivacylabs/lpg/v2"
 )
 
 type sliceTestCase struct {
-	Name     string      `json:"name"`
-	Schema   interface{} `json:"schema"`
-	Terms    []string    `json:"terms"`
-	Expected interface{} `json:"expected"`
+	Name     string   `json:"name"`
+	Schema   any      `json:"schema"`
+	Terms    []string `json:"terms"`
+	Expected any      `json:"expected"`
 }
 
 func (tc sliceTestCase) GetName() string { return tc.Name }
 
 func (tc sliceTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	sch, err := UnmarshalLayer(tc.Schema, nil)
+	sch, err := UnmarshalLayerFromTree(tc.Schema)
 	if err != nil {
 		t.Errorf("%s: Cannot unmarshal layer: %v", tc.Name, err)
 		return
 	}
-	slice := sch.Slice(OverlayTerm.Name, GetSliceByTermsFunc(tc.Terms, false))
-	marshaled, err := MarshalLayer(slice)
+	expected, err := GraphFromTree(tc.Expected)
 	if err != nil {
-		t.Error(err)
+		t.Errorf("Cannot parse expected: %s", err)
+		return
 	}
-	if err := DeepEqual(ToMap(marshaled), ToMap(tc.Expected)); err != nil {
-		expected, _ := json.MarshalIndent(ToMap(tc.Expected), "", "  ")
-		got, _ := json.MarshalIndent(ToMap(marshaled), "", "  ")
-		t.Errorf("%v %s: Expected:\n%s\nGot:\n%s\n", err, tc.Name, string(expected), string(got))
+	slice := sch.Slice(OverlayTerm.Name, GetSliceByTermsFunc(tc.Terms, false))
+	if !lpg.CheckIsomorphism(expected, slice.Graph, DefaultNodeEquivalenceFunc, DefaultEdgeEquivalenceFunc) {
+		t.Errorf("%s: Expected:\n%s\nGot:\n%s\n", tc.Name, MarshalIndentGraph(expected), MarshalIndentGraph(slice.Graph))
 	}
 }
 

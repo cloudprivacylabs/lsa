@@ -30,18 +30,67 @@ func instantiatePathNodeFunc(g *lpg.Graph) func(parent, schemaNode *lpg.Node) (*
 
 func TestInstantiatePathBasic(t *testing.T) {
 	layer, err := UnmarshalLayerFromSlice([]byte(`{
-  "@context": "../../schemas/ls.json",
-  "@type": "Schema",
-  "@id": "testSchema",
-  "layer": {
-    "@id": "schemaRoot",
-    "@type": "Object",
-    "attributes": {
-       "attr1": { "@type": "Value" },
-       "attr2": { "@type": "Value" }
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "testSchema"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "schemaRoot"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr1"
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr2"
+      }
     }
-  }
-}`))
+  ]
+}
+`))
 	if err != nil {
 		panic(err)
 	}
@@ -58,30 +107,118 @@ func TestInstantiatePathBasic(t *testing.T) {
 }
 
 func TestInstantiatePathNested(t *testing.T) {
-	layer, err := UnmarshalLayerFromSlice([]byte(`{
-  "@context": "../../schemas/ls.json",
-  "@type": "Schema",
-  "@id": "testSchema",
-  "layer": {
-    "@id": "schemaRoot",
-    "@type": "Object",
-    "attributes": {
-       "attr1": { "@type": "Value" },
-       "attr2": { 
-          "@type": "Object",
-          "attributes": {
-             "attr3": { "@type": "Value"},
-             "attr4": {
-                "@type": "Object",
-                "attributes": {
-                   "attr5": { "@type": "Value" }
-                }
-             }
-          }
-       }
+	layer, err := UnmarshalLayerFromSlice([]byte(`
+{
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "testSchema"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "schemaRoot"
+      },
+      "edges": [
+        {
+          "to": 5,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 6,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr3"
+      }
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr4"
+      },
+      "edges": [
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr5"
+      }
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr1"
+      }
+    },
+    {
+      "n": 6,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr2"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
     }
-  }
-}`))
+  ]
+}
+`))
 	if err != nil {
 		panic(err)
 	}
@@ -106,36 +243,150 @@ func TestInstantiatePathNested(t *testing.T) {
 }
 
 func TestInstantiatePathNestedWithAncestor(t *testing.T) {
-	layer, err := UnmarshalLayerFromSlice([]byte(`{
-  "@context": "../../schemas/ls.json",
-  "@type": "Schema",
-  "@id": "testSchema",
-  "layer": {
-    "@id": "schemaRoot",
-    "@type": "Object",
-    "attributes": {
-       "attr1": { "@type": "Value" },
-       "attr2": { 
-          "@type": "Object",
-          "attributes": {
-             "attr3": { "@type": "Value"},
-             "attr4": {
-                "@type": "Object",
-                "attributes": {
-                   "attr5": { "@type": "Value" },
-                   "attr6": {
-                     "@type": "Object",
-                     "attributes": {
-                        "attr7": { "@type": "Value"}
-                     }
-                   }
-                }
-             }
-          }
-       }
+	layer, err := UnmarshalLayerFromSlice([]byte(`
+{
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "testSchema"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Object",
+        "https://lschema.org/Attribute"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "schemaRoot"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr2"
+      },
+      "edges": [
+        {
+          "to": 5,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 6,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr7"
+      }
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr3"
+      }
+    },
+    {
+      "n": 7,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr5"
+      }
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "attr1"
+      }
+    },
+    {
+      "n": 6,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr4"
+      },
+      "edges": [
+        {
+          "to": 7,
+          "label": "https://lschema.org/Object/attributes"
+        },
+        {
+          "to": 8,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "labels": [
+        "https://lschema.org/Object",
+        "https://lschema.org/Attribute"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/nodeId": "attr6"
+      },
+      "edges": [
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
     }
-  }
-}`))
+  ]
+}
+`))
 	if err != nil {
 		panic(err)
 	}

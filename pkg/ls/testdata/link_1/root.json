@@ -1,16 +1,51 @@
 {
-    "@context": "../../schemas/ls.json",
-    "@id": "https://root",
-    "@type": "Schema",
-    "valueType": "root",
-    "layer": {
-        "@id": "root",
-        "@type": "Object",
-        "entityIdFields": "https://idField",
-        "attributes": {
-            "https://idField": {
-                "@type": "Value"
-            }
+  "nodes": [
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "https://root",
+        "https://lschema.org/valueType": "root"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
         }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object",
+        "root"
+      ],
+      "properties": {
+        "https://lschema.org/entityIdFields": [
+          "https://idField"
+        ],
+        "https://lschema.org/nodeId": "root"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributes"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/nodeId": "https://idField"
+      }
     }
+  ]
 }

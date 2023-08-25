@@ -1,54 +1,149 @@
-[
+{
+  "nodes": [
     {
-        "@context": ["../../schemas/ls.json"],
-        "@type": "Schema",
-        "@id": "http://example.com/id",
-        "layer": {
-            "@type": "Object",
-            "@id":"root",
-            "attributeList": [
-                {
-                    "@id": "https://www.example.com/id1",
-                    "@type": "Value",
-                    "attributeName": "field1"
-                },
-                {
-                    "@id": "https://www.example.com/id2",
-                    "@type": "Object",
-                    "attributeName": "obj2",
-                    "ls:ingestAs": "edge",
-                    "ls:edgeLabel": "theObjectEdge",
-                    "attributeList": [
-                        {
-                            "@id": "https://www.example.com/id3",
-                            "@type": "Value",
-                            "attributeName": "field3"
-                        }
-                    ]
-                },
-                {
-                    "@id": "https://www.example.com/id4",
-                    "@type": "Value",
-                    "attributeName": "field4"
-                },
-                {
-                    "@id": "https://www.example.com/id5",
-                    "@type": "Value",
-                    "attributeName": "field5"
-                },
-                {
-                    "@id": "https://attr1",
-                    "@type": "Array",
-                    "attributeName": "arr",
-                    "ls:ingestAs": "edge",
-                    "arrayElements": {
-                        "@id": "https://www.example.com/id0",
-                        "@type": "Value",
-                        "attributeName": "field6"
-                    }
-                }
-            ]
+      "n": 4,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 3,
+        "https://lschema.org/attributeName": "field5",
+        "https://lschema.org/nodeId": "https://www.example.com/id5"
+      }
+    },
+    {
+      "n": 6,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "field1",
+        "https://lschema.org/nodeId": "https://www.example.com/id1"
+      }
+    },
+    {
+      "n": 7,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 1,
+        "https://lschema.org/attributeName": "obj2",
+        "https://lschema.org/edgeLabel": "theObjectEdge",
+        "https://lschema.org/ingestAs": "edge",
+        "https://lschema.org/nodeId": "https://www.example.com/id2"
+      },
+      "edges": [
+        {
+          "to": 2,
+          "label": "https://lschema.org/Object/attributeList"
         }
-        
+      ]
+    },
+    {
+      "n": 0,
+      "labels": [
+        "https://lschema.org/Schema"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "http://example.com/id"
+      },
+      "edges": [
+        {
+          "to": 1,
+          "label": "https://lschema.org/layer"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Object"
+      ],
+      "properties": {
+        "https://lschema.org/nodeId": "root"
+      },
+      "edges": [
+        {
+          "to": 6,
+          "label": "https://lschema.org/Object/attributeList"
+        },
+        {
+          "to": 7,
+          "label": "https://lschema.org/Object/attributeList"
+        },
+        {
+          "to": 3,
+          "label": "https://lschema.org/Object/attributeList"
+        },
+        {
+          "to": 4,
+          "label": "https://lschema.org/Object/attributeList"
+        },
+        {
+          "to": 8,
+          "label": "https://lschema.org/Object/attributeList"
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 2,
+        "https://lschema.org/attributeName": "field4",
+        "https://lschema.org/nodeId": "https://www.example.com/id4"
+      }
+    },
+    {
+      "n": 2,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 0,
+        "https://lschema.org/attributeName": "field3",
+        "https://lschema.org/nodeId": "https://www.example.com/id3"
+      }
+    },
+    {
+      "n": 5,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Value"
+      ],
+      "properties": {
+        "https://lschema.org/attributeName": "field6",
+        "https://lschema.org/nodeId": "https://www.example.com/id0"
+      }
+    },
+    {
+      "n": 8,
+      "labels": [
+        "https://lschema.org/Attribute",
+        "https://lschema.org/Array"
+      ],
+      "properties": {
+        "https://lschema.org/attributeIndex": 4,
+        "https://lschema.org/attributeName": "arr",
+        "https://lschema.org/ingestAs": "edge",
+        "https://lschema.org/nodeId": "https://attr1"
+      },
+      "edges": [
+        {
+          "to": 5,
+          "label": "https://lschema.org/Array/elements"
+        }
+      ]
     }
-]
+  ]
+}
