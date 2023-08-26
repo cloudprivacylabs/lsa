@@ -479,5 +479,275 @@
                 }
             }
         }
+    },
+    {
+        "name": "Polymorphic",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@id":"http://example.org/id",
+            "@type": "Schema",
+            "layer": {
+                "@type": "Object",
+                "@id": "root",
+                "attributes": {
+                    "id1": {
+                        "@type": "Value",
+                        "attributeName":"field1"
+                    },
+                    "id2": {
+                        "@type": "Polymorphic",
+                        "attributeName":"field2",
+                        "oneOf": [
+                            {
+                                "@id": "option1",
+                                "@type": "Object",
+                                "attributes": {
+                                    "objType1": {
+                                        "@type": "Value",
+                                        "attributeName": "t",
+                                        "enumeration": "type1"
+                                    }
+                                }
+                            },
+                            {
+                                "@id": "option2",
+                                "@type": "Object",
+                                "attributes": {
+                                    "objType2": {
+                                        "@type": "Value",
+                                        "attributeName": "t",
+                                        "enumeration": "type2"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/id"
+                    },
+                    "edges": [
+                        {
+                            "to": 7,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 7,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeName": "field1",
+                        "https://lschema.org/nodeId": "id1"
+                    }
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Polymorphic"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeName": "field2",
+                        "https://lschema.org/nodeId": "id2"
+                    },
+                    "edges": [
+                        {
+                            "to": 5,
+                            "label": "https://lschema.org/Polymorphic/oneOf"
+                        },
+                        {
+                            "to": 6,
+                            "label": "https://lschema.org/Polymorphic/oneOf"
+                        }
+                    ]
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeName": "t",
+                        "https://lschema.org/nodeId": "objType1",
+                        "https://lschema.org/validation/enumeration": "type1"
+                    }
+                },
+                {
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeName": "t",
+                        "https://lschema.org/nodeId": "objType2",
+                        "https://lschema.org/validation/enumeration": "type2"
+                    }
+                },
+                {
+                    "n": 5,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "option1"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 6,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "option2"
+                    },
+                    "edges": [
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                }
+            ]
+        },
+        "compacted": {
+            "@id":"http://example.org/id",
+            "@type": "https://lschema.org/Schema",
+            "https://lschema.org/layer": {
+                "@id": "root",
+                "@type": ["https://lschema.org/Object","https://lschema.org/Attribute"],
+                "https://lschema.org/Object/attributes": {
+                    "id1": {
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Value"],
+                        "https://lschema.org/attributeName": "field1"
+                    },
+                    "id2": {
+                        "@type": ["https://lschema.org/Attribute","https://lschema.org/Polymorphic"],
+                        "https://lschema.org/attributeName": "field2",
+                        "https://lschema.org/Polymorphic/oneOf": [
+                            {
+                                "@id": "option1",
+                                "@type": ["https://lschema.org/Object", "https://lschema.org/Attribute"],
+                                "https://lschema.org/Object/attributes": {
+                                    "objType1": {
+                                        "@type": ["https://lschema.org/Value","https://lschema.org/Attribute"],
+                                        "https://lschema.org/attributeName": "t",
+                                        "https://lschema.org/validation/enumeration": "type1"
+                                    }
+                                }
+                            },
+                            {
+                                "@id": "option2",
+                                "@type": ["https://lschema.org/Object", "https://lschema.org/Attribute"],
+                                "https://lschema.org/Object/attributes": {
+                                    "objType2": {
+                                        "@type": ["https://lschema.org/Value","https://lschema.org/Attribute"],
+                                        "https://lschema.org/attributeName": "t",
+                                        "https://lschema.org/validation/enumeration": "type2"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "name": "RootAnnotations",
+        "input": {
+            "@context": "../../schemas/v1/ls.json",
+            "@type":"Schema",
+            "@id": "http://testschema",
+            "valueType": "t",
+            "layer": {
+                "@type": "Object",
+                "@id":"root",
+                "attributes": [
+                ]
+            }
+        },
+        "graph": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://testschema",
+                        "https://lschema.org/valueType": "t"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "https://lschema.org/Attribute",
+                        "t"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    }
+                }
+            ]
+        },
+        "compacted": {
+            "@id": "http://testschema",
+            "@type": "https://lschema.org/Schema",
+            "https://lschema.org/valueType": "t",
+            "https://lschema.org/layer": {
+                "@id": "root",
+                "@type": ["https://lschema.org/Attribute","https://lschema.org/Object","t"]
+            }
+        }
     }
 ]

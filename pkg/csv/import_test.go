@@ -88,7 +88,7 @@ func TestImportSchema(t *testing.T) {
 		t.Errorf("Wrong type")
 	}
 	if layers[0].GetValueType() != "type" {
-		t.Errorf("Wrong value type")
+		t.Errorf("Wrong value type: %v", layers[0].GetValueType())
 	}
 	if layers[1].GetValueType() != "type" {
 		t.Errorf("Wrong value type: %s", layers[1].GetValueType())
@@ -116,7 +116,7 @@ func TestImportSchema(t *testing.T) {
 	if s, _ := ls.GetPropertyValueAs[string](attr, ls.ValueTypeTerm.Name); s != "string" {
 		t.Errorf("Wrong type")
 	}
-	if s, _ := ls.GetPropertyValueAs[[]string](attr, "https://dpv_something"); s[0] != "dpv:value" {
+	if s, _ := ls.GetPropertyValueAs[[]any](attr, "https://dpv_something"); s[0] != "dpv:value" {
 		t.Error("Wrong dpv")
 	}
 }

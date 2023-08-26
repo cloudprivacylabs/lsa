@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -213,7 +214,7 @@ will result:
 			if err != nil {
 				failErr(err)
 			}
-			marshaled, err := ls.MarshalLayer(layer)
+			marshaled, err := jsonld.MarshalLayer(layer)
 			if err != nil {
 				failErr(err)
 			}
@@ -232,7 +233,7 @@ will result:
 				failErr(err)
 			}
 			for _, l := range layers {
-				intf, _ := ls.MarshalLayer(l)
+				intf, _ := jsonld.MarshalLayer(l)
 				d, _ := json.MarshalIndent(intf, "", "  ")
 				fmt.Println(string(d))
 			}

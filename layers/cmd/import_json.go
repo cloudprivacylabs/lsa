@@ -23,6 +23,7 @@ import (
 
 	"github.com/cloudprivacylabs/lpg/v2"
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -148,7 +149,7 @@ as a schema+layers. All fields are Go templates evaluated using the current enti
 				}
 				tdata := makeEntityTemplateData(item.Entity.Entity)
 				for i := range layers {
-					marshaled, err := ls.MarshalLayer(layers[i])
+					marshaled, err := jsonld.MarshalLayer(layers[i])
 					if err != nil {
 						failErr(err)
 					}

@@ -24,6 +24,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	"github.com/cloudprivacylabs/lsa/pkg/bundle"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -112,7 +113,7 @@ func LoadBundle(ctx *ls.Context, file []string) (BundlesSchemaLoader, error) {
 			if err != nil {
 				return nil, err
 			}
-			return ls.UnmarshalLayer(v, ctx.GetInterner())
+			return jsonld.UnmarshalLayer(v, ctx.GetInterner())
 		}); err != nil {
 			return BundlesSchemaLoader{}, err
 		}
@@ -131,7 +132,7 @@ func ReadLayers(input []byte, interner ls.Interner) ([]*ls.Layer, error) {
 	// Input is JSON or JSON-LD
 	// If input is []interface{}, it must be JSON-LD
 	if _, arr := v.([]interface{}); arr {
-		l, err := ls.UnmarshalLayer(v, interner)
+		l, err := jsonld.UnmarshalLayer(v, interner)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +153,7 @@ func ReadLayers(input []byte, interner ls.Interner) ([]*ls.Layer, error) {
 		}
 	}
 	// Try json-ld
-	l, err := ls.UnmarshalLayer(v, interner)
+	l, err := jsonld.UnmarshalLayer(v, interner)
 	if err != nil {
 		return nil, err
 	}

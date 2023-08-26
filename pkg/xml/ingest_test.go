@@ -22,6 +22,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg/v2"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -42,7 +43,7 @@ func xmlIngestAndCheck(xmlname, schemaName, graphname string) error {
 		if err := json.Unmarshal(s, &v); err != nil {
 			return fmt.Errorf("%s: %w", schemaName, err)
 		}
-		layer, err := ls.UnmarshalLayer(v, nil)
+		layer, err := jsonld.UnmarshalLayer(v, nil)
 		if err != nil {
 			return fmt.Errorf("%s: %w", schemaName, err)
 		}

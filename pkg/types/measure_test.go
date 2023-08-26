@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/cloudprivacylabs/lpg/v2"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/opencypher"
 )
@@ -62,7 +63,7 @@ func TestMeasureValueNodesExpr(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		layer, err = ls.UnmarshalLayer(v, nil)
+		layer, err = jsonld.UnmarshalLayer(v, nil)
 		if err != nil {
 			t.Error(err)
 			return
@@ -157,7 +158,7 @@ func TestMeasureValueNodes(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		layer, err = ls.UnmarshalLayer(v, nil)
+		layer, err = jsonld.UnmarshalLayer(v, nil)
 		if err != nil {
 			t.Error(err)
 			return
@@ -247,7 +248,7 @@ func TestMeasureValueNodeHasValueAndUnit(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		layer, err = ls.UnmarshalLayer(v, nil)
+		layer, err = jsonld.UnmarshalLayer(v, nil)
 		if err != nil {
 			t.Error(err)
 			return
@@ -346,7 +347,7 @@ func TestSetMeasureValue(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		layer, err = ls.UnmarshalLayer(v, nil)
+		layer, err = jsonld.UnmarshalLayer(v, nil)
 		if err != nil {
 			t.Error(err)
 			return

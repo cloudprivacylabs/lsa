@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/stretchr/testify/require"
 )
@@ -78,7 +79,7 @@ func TestIngest(t *testing.T) {
 	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
 		t.Fatal(err)
 	}
-	schema, err := ls.UnmarshalLayer(schMap, nil)
+	schema, err := jsonld.UnmarshalLayer(schMap, nil)
 	if err != nil {
 		t.Error(err)
 	}

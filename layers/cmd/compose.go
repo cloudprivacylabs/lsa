@@ -25,6 +25,7 @@ import (
 
 	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
 	jsonsch "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -67,7 +68,7 @@ var composeCmd = &cobra.Command{
 				failErr(err)
 			}
 			for i, input := range inputs {
-				layer, err := ls.UnmarshalLayer(input, interner)
+				layer, err := jsonld.UnmarshalLayer(input, interner)
 				if err != nil {
 					fail(fmt.Sprintf("Cannot unmarshal %s: %v", args[i], err))
 				}
@@ -83,7 +84,7 @@ var composeCmd = &cobra.Command{
 		if output != nil {
 			format, _ := cmd.Flags().GetString("output")
 			if format == "jsonld" {
-				out, _ := ls.MarshalLayer(output)
+				out, _ := jsonld.MarshalLayer(output)
 				d, _ := json.MarshalIndent(out, "", "  ")
 				fmt.Println(string(d))
 			} else {

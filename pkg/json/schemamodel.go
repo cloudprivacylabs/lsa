@@ -36,11 +36,11 @@ type schemaProperty struct {
 	allOf        []*schemaProperty
 	typ          []string
 	format       string
-	enum         []interface{}
+	enum         []any
 	pattern      string
 	description  string
 	defaultValue *string
-	annotations  map[string]interface{}
+	annotations  map[string]any
 
 	node *lpg.Node
 
@@ -175,7 +175,7 @@ func (imp schemaImporter) schemaAttrs(attr *schemaProperty, path schemaPath, key
 		//attr.description = attr.localReference.description
 		for k, v := range attr.localReference.annotations {
 			if attr.annotations == nil {
-				attr.annotations = make(map[string]interface{})
+				attr.annotations = make(map[string]any)
 			}
 			attr.annotations[k] = v
 		}
@@ -228,9 +228,7 @@ func (imp schemaImporter) setNodeProperties(attr *schemaProperty, newNode *lpg.N
 		newNode.SetProperty(ls.DefaultValueTerm.Name, ls.NewPropertyValue(ls.DefaultValueTerm.Name, *attr.defaultValue))
 	}
 	for k, v := range attr.annotations {
-		if err := ls.GetTermMarshaler(k).UnmarshalJSON(imp.layer, k, v, newNode, imp.interner); err != nil {
-			return err
-		}
+		newNode.SetProperty(k, ls.NewPropertyValue(k, v))
 	}
 
 	if attr.reference != nil {

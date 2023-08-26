@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -64,7 +65,7 @@ func (repo *Repository) ParseAddObject(in []byte) (interface{}, error) {
 
 // ParseAddIntf parses and adds the unmarshaled object
 func (repo *Repository) ParseAddIntf(m interface{}) (interface{}, error) {
-	layer, err1 := ls.UnmarshalLayer(m, repo.interner)
+	layer, err1 := jsonld.UnmarshalLayer(m, repo.interner)
 	if err1 != nil {
 		return nil, err1
 	}
@@ -102,7 +103,7 @@ func (repo *Repository) GetLayer(id string) *ls.Layer {
 
 // GetComposedSchema returns a composed layer from the schema variant
 func (repo *Repository) GetComposedSchema(context *ls.Context, id string) (*ls.Layer, error) {
-	data, err := ls.MarshalLayer(repo.GetLayer(id))
+	data, err := jsonld.MarshalLayer(repo.GetLayer(id))
 	if err != nil {
 		return nil, err
 	}

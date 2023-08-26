@@ -8,60 +8,121 @@
                 }
             }
         },
-        "target": {
-            "@context": {"ls": "https://lschema.org/"},
-            "@type": "ls:Schema",
-            "@id": "http://example.org/TestTarget",
-            "ls:layer": {
-                "@type": ["ls:Object","http://example.org/ValueType"],
-                "@id":"root",
-                "ls:Object/attributes": [
-                    {
-                        "@id": "val1",
-                        "@type": "ls:Value"
-                    }
-                ]
-            }
-        },
-        "rootId": "http://example.org/obj1",
-        "sourceLdGraph": {
-            "@graph": [
+        "target":  {
+            "nodes": [
                 {
-                    "@id": "http://example.org/obj1",
-                    "@type": ["https://lschema.org/DocumentNode","http://example.org/ValueType"],
-                    "https://lschema.org/has": [
-                        {"@id": "http://example.org/attr1"},
-                        {"@id": "http://example.org/attr2"}
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/TestTarget"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
                     ]
                 },
                 {
-                    "@id": "http://example.org/attr1",
-                    "@type": "https://lschema.org/DocumentNode",
-                    "https://lschema.org/value": "123"
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "http://example.org/ValueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
                 },
                 {
-                    "@id": "http://example.org/attr2",
-                    "@type": "https://lschema.org/DocumentNode",
-                    "https://lschema.org/value": "true"
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "val1",
+                        "https://lschema.org/transform/valueExpr": [
+                            "return 'literal'"
+                        ]
+                    }
                 }
             ]
         },
-        "expectedLd": {
-            "@graph": [
+        "rootId": "http://example.org/obj1",
+        "sourceGraph": {
+            "nodes": [
                 {
-                    "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/ValueType"],
-                    "https://lschema.org/schemaNodeId": "root",
-                    "https://lschema.org/has": [
-                        {"@id": "val1"}
+                    "n":0,
+                    "labels": ["https://lschema.org/DocumentNode","http://example.org/ValueType"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/obj1"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/has"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/has"
+                        }
                     ]
                 },
                 {
-                    "@id":"val1",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
-                    "https://lschema.org/schemaNodeId": "val1",
-                    "https://lschema.org/attributeIndex": 0,
-                    "https://lschema.org/value":"literal"
+                    "n": 1,
+                    "labels": ["https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/attr1",
+                        "https://lschema.org/value": "123"
+                    }
+                },
+                {
+                    "n": 2,
+                    "labels": ["https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/attr2",
+                        "https://lschema.org/value": "true"
+                    }
+                }
+            ]
+        },
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/ValueType"],
+                    "properties": {
+                        "https://lschema.org/schemaNodeId": "root",
+                        "https://lschema.org/attributeIndex": 0
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label":  "https://lschema.org/has"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "https://lschema.org/schemaNodeId":"val1",
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/value":"literal",
+                        "https://lschema.org/transform/valueExpr": [
+                            "return 'literal'"
+                        ]
+                    }
                 }
             ]
         }
@@ -76,57 +137,116 @@
             }
         },
         "target": {
-            "@context": {"ls": "https://lschema.org/"},
-            "@type": "ls:Schema",
-            "@id": "http://example.org/TestTarget",
-            "ls:layer": {
-                "@type": ["ls:Object","http://example.org/ValueType"],
-                "@id":"root",
-                "ls:Object/attributes": [
-                    {
-                        "@id": "val1",
-                        "@type": "ls:Value"
-                    }
-                ]
-            }
-        },
-        "rootId": "http://example.org/obj1",
-        "sourceLdGraph": {
-            "@graph": [
+            "nodes": [
                 {
-                    "@id": "http://example.org/obj1",
-                    "@type": ["https://lschema.org/DocumentNode"],
-                    "https://lschema.org/has": [
-                        {"@id": "http://example.org/attr1"},
-                        {"@id": "http://example.org/attr2"}
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/TestTarget"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
                     ]
                 },
                 {
-                    "@id": "http://example.org/attr1",
-                    "https://prop": "propValue",
-                    "@type": "https://lschema.org/DocumentNode",
-                    "https://lschema.org/value": "123"
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "http://example.org/ValueType"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
                 },
                 {
-                    "@id": "http://example.org/attr2",
-                    "@type": "https://lschema.org/DocumentNode",
-                    "https://lschema.org/value": "true"
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "val1",
+                        "https://lschema.org/transform/valueExpr": [
+                            "match (n) where n.`https://prop`=\"propValue\" return n"
+                        ]
+                    }
                 }
             ]
         },
-        "expectedLd": {
-            "@graph": [
+        "rootId": "http://example.org/obj1",
+        "sourceGraph": {
+            "nodes": [
                 {
-                    "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/ValueType"],
-                    "https://lschema.org/has": [
-                        {"@id": "val1"}
+                    "n": 0,
+                    "labels": ["https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/obj1"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/has"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/has"
+                        }
                     ]
                 },
                 {
-                    "@id":"val1",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
-                    "https://lschema.org/value":"123"
+                    "n": 1,
+                    "labels": ["https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/attr1",
+                        "https://prop": "propValue",
+                        "https://lschema.org/value": "123"
+                    }
+                },
+                {
+                    "n": 2,
+                    "labels": ["https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/attr2",
+                        "https://lschema.org/value": "true"
+                    }
+                }
+            ]
+        },
+        "expected": {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object","http://example.org/ValueType"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/has"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "https://lschema.org/nodeId":"val1",
+                        "https://lschema.org/value":"123"
+                    }
                 }
             ]
         }
@@ -144,79 +264,177 @@
             }
         },
         "target": {
-            "@context": {"ls": "https://lschema.org/"},
-            "@type": "ls:Schema",
-            "@id": "http://example.org/TestTarget",
-            "ls:layer": {
-                "@type": ["ls:Object","http://example.org/ValueType","https://1"],
-                "@id": "root",
-                "ls:Object/attributes": [
-                    {
-                        "@id": "val1",
-                        "@type": "ls:Value"
-                    },
-                    {
-                        "@id": "obj1",
-                        "@type": ["ls:Object","https://2"],
-                        "ls:Object/attributes": [
-                            {
-                                "@id": "val2",
-                                "@type": "ls:Value"
-                            }
+            "nodes": [
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Value",
+                        "https://lschema.org/Attribute"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "val1",
+                        "https://lschema.org/transform/valueExpr": [
+                            "match (n:`https://test1`) return n"
                         ]
                     }
-                ]
-            }
-        },
-        "rootId": "http://example.org/obj1",
-        "sourceLdGraph": {
-            "@graph": [
+                },
                 {
-                    "@id": "http://example.org/obj1",
-                    "@type": ["https://lschema.org/DocumentNode"],
-                    "https://lschema.org/has": [
-                        {"@id": "http://example.org/attr1"},
-                        {"@id": "http://example.org/attr2"}
+                    "n": 4,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "val2",
+                        "https://lschema.org/transform/valueExpr": [
+                            "match (n:`https://test2`) return n"
+                        ]
+                    }
+                },
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Schema"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/TestTarget"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
                     ]
                 },
                 {
-                    "@id": "http://example.org/attr1",
-                    "@type": ["https://lschema.org/DocumentNode","https://test1"],
-                    "https://lschema.org/value": "123"
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Object",
+                        "http://example.org/ValueType",
+                        "https://lschema.org/Attribute",
+                        "https://1"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
                 },
                 {
-                    "@id": "http://example.org/attr2",
-                    "@type": ["https://lschema.org/DocumentNode","https://test2"],
-                    "https://lschema.org/value": "true"
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object",
+                        "https://2"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "obj1"
+                    },
+                    "edges": [
+                        {
+                            "to": 4,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
                 }
             ]
         },
-        "expectedLd": {
-            "@graph": [
+        "rootId": "http://example.org/obj1",
+        "sourceGraph": {
+            "nodes": [
                 {
-                    "@id": "root",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://1","http://example.org/ValueType"],
-                    "https://lschema.org/has": [
-                        {"@id": "val1"},
-                        {"@id": "obj1"}
+                    "n": 0,
+                    "labels": ["https://lschema.org/DocumentNode"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/obj1"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/has"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/has"
+                        }
                     ]
                 },
                 {
-                    "@id":"val1",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
-                    "https://lschema.org/value":"123"
+                    "n": 1,
+                    "labels": ["https://lschema.org/DocumentNode","https://test1"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/attr1",
+                        "https://lschema.org/value": "123"
+                    }
                 },
                 {
-                    "@id":"obj1",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://2"],
-                    "https://lschema.org/has": [
-                        {"@id": "val2"}
+                    "n": 2,
+                    "labels": ["https://lschema.org/DocumentNode","https://test2"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "http://example.org/attr2",
+                        "https://lschema.org/value": "true"
+                    }
+                }
+            ]
+        },
+        "expected":  {
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://1","http://example.org/ValueType"],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/has"
+                        },
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/has"
+                        }
                     ]
                 },
                 {
-                    "@id":"val2",
-                    "@type": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
-                    "https://lschema.org/value":"true"
+                    "n": 1,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "https://lschema.org/nodeId":"val1",
+                        "https://lschema.org/value":"123"
+                    }
+                },
+                {
+                    "n": 2,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Object","https://2"],
+                    "properties": {
+                        "https://lschema.org/nodeId":"obj1"
+                    },
+                    "edges": [
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/has"
+                        }
+                    ]
+                },
+                {
+                    "n":3,
+                    "labels": ["https://lschema.org/DocumentNode","https://lschema.org/Value"],
+                    "properties": {
+                        "https://lschema.org/nodeId":"val2",
+                        "https://lschema.org/value":"true"
+                    }
                 }
             ]
         }

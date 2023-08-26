@@ -23,6 +23,7 @@ import (
 	"github.com/piprate/json-gold/ld"
 
 	"github.com/cloudprivacylabs/lpg/v2"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -82,7 +83,7 @@ func TestIngestFlat(t *testing.T) {
 	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
 		t.Fatal(err)
 	}
-	schema, err := ls.UnmarshalLayer(schMap, nil)
+	schema, err := jsonld.UnmarshalLayer(schMap, nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -209,7 +210,7 @@ func TestIngestPoly(t *testing.T) {
 	if err := json.Unmarshal([]byte(schStr), &schMap); err != nil {
 		t.Fatal(err)
 	}
-	schema, err := ls.UnmarshalLayer(schMap, nil)
+	schema, err := jsonld.UnmarshalLayer(schMap, nil)
 	if err != nil {
 		t.Error(err)
 	}

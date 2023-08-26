@@ -107,12 +107,13 @@ func compact(ldNode any, attributeNodes map[string]unmarshalInfo, ldNodes map[st
 	return ldNode, nil
 }
 
-func collectProperties(attr unmarshalInfo, attributeNodes map[string]unmarshalInfo, ldNodes map[string]any) error {
-	for key, value := range attr.ldNode {
+func collectProperties(attrLdNode map[string]any, attrGraphNode *lpg.Node, attributeNodes map[string]unmarshalInfo, ldNodes map[string]any) error {
+	for key, value := range attrLdNode {
 		if key == "@id" || key == "@type" {
 			continue
 		}
-		if key == ls.LayerRootTerm.Name ||
+		if key == ls.AttributeOverlaysTerm.Name ||
+			key == ls.LayerRootTerm.Name ||
 			key == ls.ObjectAttributeListTerm.Name ||
 			key == ls.ObjectAttributesTerm.Name ||
 			key == ls.AllOfTerm.Name ||
@@ -126,7 +127,7 @@ func collectProperties(attr unmarshalInfo, attributeNodes map[string]unmarshalIn
 		if err != nil {
 			return err
 		}
-		attr.graphNode.SetProperty(key, ls.NewPropertyValue(key, pvalue))
+		attrGraphNode.SetProperty(key, ls.NewPropertyValue(key, pvalue))
 	}
 	return nil
 }
@@ -272,24 +273,27 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 	for _, attributeNode := range attributeNodes {
 		switch attributeNode.typ {
 		case ls.AttributeTypeObject.Name:
-			if lst, ok := attributeNode.ldNode[ls.ObjectAttributeListTerm.Name].(map[string]any); ok {
+			if lst := singleObject(attributeNode.ldNode[ls.ObjectAttributeListTerm.Name]); lst != nil {
 				if listEl, ok := lst["@list"]; ok {
 					if elements, ok := listEl.([]any); ok {
 						if err := link(attributeNode, elements, ls.ObjectAttributeListTerm.Name); err != nil {
 							return nil, err
 						}
+						break
 					}
 				}
 			}
-			if element, ok := attributeNode.ldNode[ls.ObjectAttributesTerm.Name].(map[string]any); ok {
+			if element := singleObject(attributeNode.ldNode[ls.ObjectAttributesTerm.Name]); element != nil {
 				if err := link(attributeNode, []any{element}, ls.ObjectAttributesTerm.Name); err != nil {
 					return nil, err
 				}
+				break
 			}
 			if elements, ok := attributeNode.ldNode[ls.ObjectAttributesTerm.Name].([]any); ok {
 				if err := link(attributeNode, elements, ls.ObjectAttributesTerm.Name); err != nil {
 					return nil, err
 				}
+				break
 			}
 		case ls.AttributeTypeArray.Name:
 			arrayElements := singleObject(attributeNode.ldNode[ls.ArrayItemsTerm.Name])
@@ -301,7 +305,7 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 			}
 
 		case ls.AttributeTypeComposite.Name:
-			if lst, ok := attributeNode.ldNode[ls.AllOfTerm.Name].(map[string]any); ok {
+			if lst := singleObject(attributeNode.ldNode[ls.AllOfTerm.Name]); lst != nil {
 				if listEl, ok := lst["@list"]; ok {
 					if elements, ok := listEl.([]any); ok {
 						if err := link(attributeNode, elements, ls.AllOfTerm.Name); err != nil {
@@ -311,7 +315,7 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 				}
 			}
 		case ls.AttributeTypePolymorphic.Name:
-			if lst, ok := attributeNode.ldNode[ls.OneOfTerm.Name].(map[string]any); ok {
+			if lst := singleObject(attributeNode.ldNode[ls.OneOfTerm.Name]); lst != nil {
 				if listEl, ok := lst["@list"]; ok {
 					if elements, ok := listEl.([]any); ok {
 						if err := link(attributeNode, elements, ls.OneOfTerm.Name); err != nil {
@@ -323,11 +327,37 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 		}
 	}
 
+	// Collect attribute overlays
+	attrOverlays, _ := rootNodeLD[ls.AttributeOverlaysTerm.Name].(map[string]any)
+	if attrOverlays != nil {
+		arr := attrOverlays["@list"].([]any)
+		if arr != nil {
+			for _, item := range arr {
+				idMap, _ := item.(map[string]any)
+				if idMap != nil {
+					id, _ := idMap["@id"].(string)
+					if len(id) > 0 {
+						linkedAttr, ok := attributeNodes[id]
+						if !ok {
+							return nil, ls.MakeErrInvalidInput(id, "Cannot find referenced attribute")
+						}
+						layerGraph.NewEdge(rootNode, linkedAttr.graphNode, ls.AttributeOverlaysTerm.Name, nil)
+					}
+				}
+			}
+		}
+	}
+
 	// Collect properties for attributes
 	for _, attributeNode := range attributeNodes {
-		if err := collectProperties(attributeNode, attributeNodes, ldNodes); err != nil {
+		if err := collectProperties(attributeNode.ldNode, attributeNode.graphNode, attributeNodes, ldNodes); err != nil {
 			return nil, err
 		}
+	}
+
+	// Collect root properties
+	if err := collectProperties(rootNodeLD, rootNode, attributeNodes, ldNodes); err != nil {
+		return nil, err
 	}
 
 	// Link root node to the layer
@@ -348,7 +378,13 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 		return nil, ls.MakeErrInvalidInput("", "Schema has no layer")
 	}
 	layerGraph.NewEdge(rootNode, layerNode.graphNode, ls.LayerRootTerm.Name, nil)
-	return ls.NewLayerFromRootNode(rootNode), nil
+
+	layer := ls.NewLayerFromRootNode(rootNode)
+	// Set the value type
+	if s, ok := ls.GetPropertyValueAs[string](rootNode, ls.ValueTypeTerm.Name); ok {
+		layer.SetValueType(s)
+	}
+	return layer, nil
 }
 
 // Marshals the layer into a compacted jsonld document

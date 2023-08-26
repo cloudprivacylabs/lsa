@@ -42,25 +42,69 @@
             ]
         },
         "layer": {
-            "@context": "../../schemas/ls.json",
-            "@type": "Overlay",
-            "@id": "https://layer",
-            "layer": {
-                "@id": "root",
-                "@type": "Object",
-                "attributes": {
-                    "https://attr1": {
-                        "@type": "Value",
-                        "https://someAnnotation": "someValue",
-                        "valueType": "xsd:date"
+            "nodes": [
+                {
+                    "n": 0,
+                    "labels": [
+                        "https://lschema.org/Overlay"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "https://layer"
                     },
-                    "https://attr2": {
-                        "@type": "Value",
-                        "https://someAnnotation2": "someValue2",
-                        "valueType": "string"
+                    "edges": [
+                        {
+                            "to": 1,
+                            "label": "https://lschema.org/layer"
+                        }
+                    ]
+                },
+                {
+                    "n": 1,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Object"
+                    ],
+                    "properties": {
+                        "https://lschema.org/nodeId": "root"
+                    },
+                    "edges": [
+                        {
+                            "to": 2,
+                            "label": "https://lschema.org/Object/attributes"
+                        },
+                        {
+                            "to": 3,
+                            "label": "https://lschema.org/Object/attributes"
+                        }
+                    ]
+                },
+                {
+                    "n": 2,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 0,
+                        "https://lschema.org/nodeId": "https://attr1",
+                        "https://lschema.org/valueType": "xsd:date",
+                        "https://someAnnotation": "someValue"
+                    }
+                },
+                {
+                    "n": 3,
+                    "labels": [
+                        "https://lschema.org/Attribute",
+                        "https://lschema.org/Value"
+                    ],
+                    "properties": {
+                        "https://lschema.org/attributeIndex": 1,
+                        "https://lschema.org/nodeId": "https://attr2",
+                        "https://lschema.org/valueType": "string",
+                        "https://someAnnotation2": "someValue2"
                     }
                 }
-            }
+            ]
         },
         "expected": {
             "nodes":[

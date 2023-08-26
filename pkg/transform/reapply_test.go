@@ -27,7 +27,7 @@ import (
 type reapplyTestCase struct {
 	Name     string          `json:"name"`
 	Graph    json.RawMessage `json:"graph"`
-	Layer    interface{}     `json:"layer"`
+	Layer    any             `json:"layer"`
 	Expected json.RawMessage `json:"expected"`
 }
 
@@ -35,7 +35,7 @@ func (tc reapplyTestCase) GetName() string { return tc.Name }
 
 func (tc reapplyTestCase) Run(t *testing.T) {
 	t.Logf("Running %s", tc.Name)
-	layer, err := ls.UnmarshalLayer(tc.Layer, nil)
+	layer, err := ls.UnmarshalLayerFromTree(tc.Layer)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal layer: %v", tc.Name, err)
 		return

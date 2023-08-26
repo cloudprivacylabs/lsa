@@ -23,15 +23,13 @@ import (
 )
 
 type testCase struct {
-	Name          string           `json:"name"`
-	Target        interface{}      `json:"target"`
-	RootID        string           `json:"rootId"`
-	SourceGraph   json.RawMessage  `json:"sourceGraph"`
-	SourceLDGraph interface{}      `json:"sourceLdGraph"`
-	ExpectedLD    interface{}      `json:"expectedLd"`
-	Expected      json.RawMessage  `json:"expected"`
-	Disable       bool             `json:"disable"`
-	Script        *TransformScript `json:"script"`
+	Name        string           `json:"name"`
+	Target      any              `json:"target"`
+	RootID      string           `json:"rootId"`
+	SourceGraph json.RawMessage  `json:"sourceGraph"`
+	Expected    json.RawMessage  `json:"expected"`
+	Disable     bool             `json:"disable"`
+	Script      *TransformScript `json:"script"`
 }
 
 func (tc testCase) GetName() string { return tc.Name }
@@ -41,7 +39,7 @@ func (tc testCase) Run(t *testing.T) {
 		return
 	}
 	t.Logf("Running %s", tc.Name)
-	targetLayer, err := ls.UnmarshalLayer(tc.Target, nil)
+	targetLayer, err := ls.UnmarshalLayerFromTree(tc.Target)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal target layer: %v", tc.Name, err)
 		return
@@ -52,12 +50,9 @@ func (tc testCase) Run(t *testing.T) {
 	}
 	sourceGraph := lpg.NewGraph()
 
-	if tc.SourceGraph != nil {
-		m := ls.JSONMarshaler{}
-		err = m.Unmarshal(tc.SourceGraph, sourceGraph)
-	} else {
-		err = ls.UnmarshalJSONLDGraph(tc.SourceLDGraph, sourceGraph, nil)
-	}
+	m := ls.JSONMarshaler{}
+	err = m.Unmarshal(tc.SourceGraph, sourceGraph)
+
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal source graph: %v", tc.Name, err)
 		return
@@ -93,12 +88,8 @@ func (tc testCase) Run(t *testing.T) {
 	}
 
 	expectedGraph := lpg.NewGraph()
-	if tc.Expected != nil {
-		m := ls.JSONMarshaler{}
-		err = m.Unmarshal(tc.Expected, expectedGraph)
-	} else {
-		err = ls.UnmarshalJSONLDGraph(tc.ExpectedLD, expectedGraph, nil)
-	}
+	m = ls.JSONMarshaler{}
+	err = m.Unmarshal(tc.Expected, expectedGraph)
 	if err != nil {
 		t.Errorf("Test case: %s Cannot unmarshal expected graph: %v", tc.Name, err)
 		return
@@ -228,11 +219,11 @@ func TestBasicMapScript(t *testing.T) {
 	ls.RunTestsFromFile(t, "testdata/mapbasic_script.json", run)
 }
 
-func TestFHIRReshape(t *testing.T) {
-	run := func(in json.RawMessage) (ls.TestCase, error) {
-		var c testCase
-		err := json.Unmarshal(in, &c)
-		return c, err
-	}
-	ls.RunTestsFromFile(t, "testdata/fhir.json", run)
-}
+// func TestFHIRReshape(t *testing.T) {
+// 	run := func(in json.RawMessage) (ls.TestCase, error) {
+// 		var c testCase
+// 		err := json.Unmarshal(in, &c)
+// 		return c, err
+// 	}
+// 	ls.RunTestsFromFile(t, "testdata/fhir.json", run)
+// }

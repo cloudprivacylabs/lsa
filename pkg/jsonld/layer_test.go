@@ -15,7 +15,6 @@
 package jsonld
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"reflect"

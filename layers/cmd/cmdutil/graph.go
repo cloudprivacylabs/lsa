@@ -17,7 +17,6 @@ package cmdutil
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 
@@ -33,18 +32,12 @@ func ReadGraph(gfile []string, interner ls.Interner, inputFormat string) (*lpg.G
 	if inputFormat == "json" {
 		return ReadJSONGraph(gfile, interner)
 	}
-	if inputFormat == "jsonld" {
-		return ReadJSONLDGraph(gfile, interner)
-	}
 	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
 
 func StreamGraph(ctx context.Context, file []string, interner ls.Interner, inputFormat string) (<-chan GraphStream, error) {
 	if inputFormat == "json" {
 		return StreamJSONGraph(ctx, file, interner)
-	}
-	if inputFormat == "jsonld" {
-		return StreamJSONLDGraph(ctx, file, interner)
 	}
 	return nil, fmt.Errorf("Unrecognized input format: %s", inputFormat)
 }
@@ -65,20 +58,6 @@ func ReadGraphFromReader(ctx context.Context, reader io.Reader, interner ls.Inte
 				}
 				target := lpg.NewGraph()
 				switch inputFormat {
-				case "jsonld":
-					var v interface{}
-					if err := json.Unmarshal(data, &v); err != nil {
-						ret <- GraphStream{
-							Err: err,
-						}
-						break
-					}
-					g := lpg.NewGraph()
-					err := ls.UnmarshalJSONLDGraph(v, g, interner)
-					ret <- GraphStream{
-						G:   g,
-						Err: err,
-					}
 
 				case "json":
 					m := ls.JSONMarshaler{}
@@ -96,20 +75,6 @@ func ReadGraphFromReader(ctx context.Context, reader io.Reader, interner ls.Inte
 		}
 	}()
 	return ret, nil
-}
-
-func ReadJSONLDGraph(gfile []string, interner ls.Interner) (*lpg.Graph, error) {
-	data, err := ReadFileOrStdin(gfile)
-	if err != nil {
-		return nil, err
-	}
-	var v interface{}
-	if err := json.Unmarshal(data, &v); err != nil {
-		return nil, err
-	}
-	g := lpg.NewGraph()
-	err = ls.UnmarshalJSONLDGraph(v, g, interner)
-	return g, err
 }
 
 func ReadJSONGraph(gfile []string, interner ls.Interner) (*lpg.Graph, error) {
@@ -159,62 +124,11 @@ func StreamJSONGraph(ctx context.Context, file []string, interner ls.Interner) (
 	return ret, nil
 }
 
-func StreamJSONLDGraph(ctx context.Context, file []string, interner ls.Interner) (<-chan GraphStream, error) {
-	reader, err := StreamFileOrStdin(file)
-	if err != nil {
-		return nil, err
-	}
-	rd := jsonstream.NewConcatReader(reader)
-	ret := make(chan GraphStream)
-	go func() {
-		defer close(ret)
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			default:
-				data, err := rd.ReadRaw()
-				if err == io.EOF {
-					return
-				}
-				var v interface{}
-				if err := json.Unmarshal(data, &v); err != nil {
-					ret <- GraphStream{
-						Err: err,
-					}
-					return
-				}
-				g := lpg.NewGraph()
-				err = ls.UnmarshalJSONLDGraph(v, g, interner)
-				if err != nil {
-					ret <- GraphStream{
-						Err: err,
-					}
-					return
-				}
-				ret <- GraphStream{
-					G: g,
-				}
-			}
-		}
-	}()
-	return ret, nil
-}
-
 func WriteGraph(cmd *cobra.Command, graph *lpg.Graph, format string, out io.Writer) error {
 	switch format {
 	case "json":
 		m := ls.JSONMarshaler{}
 		if err := m.Encode(graph, out); err != nil {
-			return err
-		}
-		_, err := fmt.Fprintln(out, "")
-		return err
-	case "jsonld":
-		marshaler := ls.LDMarshaler{}
-		intf := marshaler.Marshal(graph)
-		enc := json.NewEncoder(out)
-		if err := enc.Encode(intf); err != nil {
 			return err
 		}
 		_, err := fmt.Fprintln(out, "")

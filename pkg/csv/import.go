@@ -22,6 +22,7 @@ import (
 	"text/template"
 
 	"github.com/cloudprivacylabs/lpg/v2"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 	"github.com/cloudprivacylabs/lsa/pkg/validators"
 )
@@ -423,7 +424,7 @@ func ImportSchema(ctx *ls.Context, rows [][]string, context map[string]interface
 		}
 		layerNode[ls.ObjectAttributeListTerm.Name] = objectNode
 
-		l, err := ls.UnmarshalLayer(layerMap, ctx.GetInterner())
+		l, err := jsonld.UnmarshalLayer(layerMap, ctx.GetInterner())
 		if err != nil {
 			return nil, fmt.Errorf("Cannot create layer %s: %w", layer["@id"][0], err)
 		}
