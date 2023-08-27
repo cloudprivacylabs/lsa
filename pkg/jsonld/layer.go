@@ -328,7 +328,7 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 	}
 
 	// Collect attribute overlays
-	attrOverlays, _ := rootNodeLD[ls.AttributeOverlaysTerm.Name].(map[string]any)
+	attrOverlays := singleObject(rootNodeLD[ls.AttributeOverlaysTerm.Name])
 	if attrOverlays != nil {
 		arr := attrOverlays["@list"].([]any)
 		if arr != nil {
@@ -362,22 +362,17 @@ func UnmarshalLayer(in any, interner ls.Interner) (*ls.Layer, error) {
 
 	// Link root node to the layer
 	layerRoot := singleObject(rootNodeLD[ls.LayerRootTerm.Name])
-	if len(layerRoot) == 0 {
-		// This is only valid if there are no attributes
-		if len(attributeNodes) == 0 {
-			return ls.NewLayerFromRootNode(rootNode), nil
+	if len(layerRoot) != 0 {
+		layerRootId, _ := layerRoot["@id"].(string)
+		if len(layerRootId) == 0 {
+			return nil, ls.MakeErrInvalidInput("", "Schema has no layer")
 		}
-		return nil, ls.MakeErrInvalidInput("", "Schema has no layer")
+		layerNode, ok := attributeNodes[layerRootId]
+		if !ok {
+			return nil, ls.MakeErrInvalidInput("", "Schema has no layer")
+		}
+		layerGraph.NewEdge(rootNode, layerNode.graphNode, ls.LayerRootTerm.Name, nil)
 	}
-	layerRootId, _ := layerRoot["@id"].(string)
-	if len(layerRootId) == 0 {
-		return nil, ls.MakeErrInvalidInput("", "Schema has no layer")
-	}
-	layerNode, ok := attributeNodes[layerRootId]
-	if !ok {
-		return nil, ls.MakeErrInvalidInput("", "Schema has no layer")
-	}
-	layerGraph.NewEdge(rootNode, layerNode.graphNode, ls.LayerRootTerm.Name, nil)
 
 	layer := ls.NewLayerFromRootNode(rootNode)
 	// Set the value type
@@ -452,7 +447,8 @@ func MarshalLayer(layer *ls.Layer) (any, error) {
 		for edges := node.GetEdges(lpg.OutgoingEdge); edges.Next(); {
 			edge := edges.Edge()
 			label := edge.GetLabel()
-			if label == ls.LayerRootTerm.Name ||
+			if label == ls.AttributeOverlaysTerm.Name ||
+				label == ls.LayerRootTerm.Name ||
 				label == ls.ObjectAttributeListTerm.Name ||
 				label == ls.ObjectAttributesTerm.Name ||
 				label == ls.AllOfTerm.Name ||
@@ -479,7 +475,8 @@ func MarshalLayer(layer *ls.Layer) (any, error) {
 					ldNode[label] = edge[0].node
 				} else if label == ls.AllOfTerm.Name ||
 					label == ls.OneOfTerm.Name ||
-					label == ls.ObjectAttributeListTerm.Name {
+					label == ls.ObjectAttributeListTerm.Name ||
+					label == ls.AttributeOverlaysTerm.Name {
 					arr := make([]any, 0, len(edge))
 					for _, x := range edge {
 						arr = append(arr, x.node)

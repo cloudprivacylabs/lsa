@@ -17,9 +17,9 @@ import (
 	"github.com/cloudprivacylabs/lsa/layers/cmd"
 
 	//	"github.com/cloudprivacylabs/lsa/layers/cmd/cmdutil"
-	//	"github.com/cloudprivacylabs/lsa/pkg/bundle"
 	csvingest "github.com/cloudprivacylabs/lsa/pkg/csv"
 	jsoningest "github.com/cloudprivacylabs/lsa/pkg/json"
+	"github.com/cloudprivacylabs/lsa/pkg/jsonld"
 	"github.com/cloudprivacylabs/lsa/pkg/ls"
 )
 
@@ -45,7 +45,7 @@ func loadJSONLDSchema(fname string) (*ls.Layer, error) {
 		return nil, err
 	}
 
-	return ls.UnmarshalLayer(v, nil)
+	return jsonld.UnmarshalLayer(v, nil)
 }
 
 func (tc ingestTest) testDefaultValues(t *testing.T) {
