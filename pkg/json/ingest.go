@@ -36,6 +36,10 @@ func IngestStream(ctx *ls.Context, baseID string, input io.Reader, parser Parser
 	if node == nil {
 		return nil, nil
 	}
+	return IngestNode(ctx, baseID, node, parser, builder, ingester)
+}
+
+func IngestNode(ctx *ls.Context, baseID string, node jsonom.Node, parser Parser, builder ls.GraphBuilder, ingester *ls.Ingester) (*lpg.Node, error) {
 	pd, err := parser.ParseDoc(ctx, baseID, node)
 	if err != nil {
 		return nil, err
