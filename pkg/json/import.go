@@ -313,6 +313,15 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 		return target, nil
 	}
 
+	objectType := func(types []string) bool {
+		for _, x := range types {
+			if x == "object" {
+				return true
+			}
+		}
+		return false
+	}
+
 	switch {
 	case len(sch.AllOf) > 0:
 		for _, x := range sch.AllOf {
@@ -341,7 +350,7 @@ func importSchema(ctx *importContext, sch *jsonschema.Schema) (*schemaProperty, 
 			target.oneOf = append(target.oneOf, prop)
 		}
 
-	case len(sch.Properties) > 0:
+	case len(sch.Properties) > 0 || objectType(sch.Types):
 		target.object = &objectSchema{properties: make(map[string]*schemaProperty), required: sch.Required}
 		for k, v := range sch.Properties {
 			val, err := importSchema(ctx, v)
